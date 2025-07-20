@@ -1,0 +1,62 @@
+/* --- 响应式设计 --- */
+
+/* 平板端 */
+@media (max-width: 1024px) {
+    .container {
+        grid-template-columns: 200px 1fr;
+    }
+    .tool-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+}
+
+/* 移动端 */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "main";
+    }
+    .side-nav {
+        position: fixed;
+        left: -240px; /* 初始隐藏 */
+        top: 0;
+        height: 100%;
+        z-index: 1001;
+        transition: left var(--transition-speed) var(--transition-func);
+        box-shadow: 0 0 40px rgba(0,0,0,0.1);
+    }
+    .side-nav.open {
+        left: 0;
+    }
+    
+    /* This is a new rule for mobile to have a toggle button */
+    .mobile-nav-toggle {
+        display: block;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 1002;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        color: var(--text-secondary);
+    }
+
+    .logo h1 {
+        display: none; /* 移动端隐藏标题 */
+    }
+    .search-bar {
+        width: 60%;
+    }
+    .main-content {
+        padding: 24px;
+    }
+    
+    .nav-toggle-btn {
+        display: none; /* Hide the desktop toggle on mobile */
+    }
+}

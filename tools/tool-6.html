@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历优化大师 - AI 工具集</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; background-color: var(--bg-secondary);
+            font-family: var(--font-family); padding: 40px 20px;
+        }
+        .tool-container {
+            width: 100%; max-width: 900px; padding: 40px;
+            background-color: var(--bg-primary); border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        h1, p.subtitle { text-align: center; }
+        h1 { color: var(--text-primary); margin-bottom: 16px; }
+        p.subtitle { color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .input-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 24px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 8px; }
+        .form-group textarea, .form-group input {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary); color: var(--text-primary); font-size: 14px;
+        }
+        .form-group textarea { min-height: 400px; resize: vertical; }
+
+        .action-btn {
+            width: 100%; background-color: var(--primary-color); color: white; border: none;
+            padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 500;
+            cursor: pointer; transition: background-color 0.3s ease;
+        }
+        
+        .results-area { display: none; margin-top: 32px; border-top: 1px solid var(--border-color); padding-top: 32px; }
+        .score-card { text-align: center; margin-bottom: 32px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px;
+            background: conic-gradient(var(--primary-color) 0deg, var(--bg-secondary) 0deg);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 32px; font-weight: bold; color: var(--primary-color);
+            transition: background 1s ease-out;
+        }
+        .feedback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .feedback-box h3 { margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .feedback-box ul { list-style: none; padding-left: 0; }
+        .feedback-box li { background-color: var(--bg-secondary); padding: 12px; border-radius: 6px; margin-bottom: 8px; }
+        .fa-thumbs-up { color: #27ae60; }
+        .fa-lightbulb { color: #f39c12; }
+
+        .back-link { display: block; margin-top: 32px; color: var(--primary-color); text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>简历优化大师</h1>
+        <p class="subtitle">粘贴您的简历内容，输入目标岗位，AI 将为您提供优化建议。</p>
+
+        <div class="input-grid">
+            <div class="form-group">
+                <label for="resume-text">简历内容</label>
+                <textarea id="resume-text" placeholder="请在此处粘贴您的简历文本..."></textarea>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="target-role">目标岗位</label>
+                    <input type="text" id="target-role" placeholder="例如：前端开发工程师">
+                </div>
+                <button class="action-btn" id="analyze-btn">分析简历</button>
+            </div>
+        </div>
+
+        <div class="results-area" id="results-area">
+            <div class="score-card">
+                <h3>综合评分</h3>
+                <div class="score-circle" id="score-circle">0</div>
+            </div>
+            <div class="feedback-grid">
+                <div class="feedback-box">
+                    <h3><i class="fas fa-thumbs-up"></i> 做的不错</h3>
+                    <ul id="strengths-list"></ul>
+                </div>
+                <div class="feedback-box">
+                    <h3><i class="fas fa-lightbulb"></i> 改进建议</h3>
+                    <ul id="improvements-list"></ul>
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script>
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const resumeText = document.getElementById('resume-text');
+        const targetRole = document.getElementById('target-role');
+        const resultsArea = document.getElementById('results-area');
+        const scoreCircle = document.getElementById('score-circle');
+        const strengthsList = document.getElementById('strengths-list');
+        const improvementsList = document.getElementById('improvements-list');
+
+        analyzeBtn.addEventListener('click', () => {
+            if (!resumeText.value.trim() || !targetRole.value.trim()) {
+                alert('请填写简历内容和目标岗位！');
+                return;
+            }
+
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '分析中...';
+            resultsArea.style.display = 'none';
+
+            // --- Simulate AI Processing ---
+            setTimeout(() => {
+                const role = targetRole.value;
+                const mockResults = {
+                    score: Math.floor(Math.random() * 21) + 75, // Random score between 75-95
+                    strengths: [
+                        "项目经验丰富，与'"+role+"'岗位要求匹配度高。",
+                        "技能栈描述清晰，包含多项关键技术。",
+                        "教育背景突出，为专业能力提供了有力支撑。"
+                    ],
+                    improvements: [
+                        "建议量化项目成果，例如“将页面加载速度提升了30%”而非“优化了性能”。",
+                        "可以增加一个“个人总结”部分，突出自己的核心竞争力和职业规划。",
+                        "针对'"+role+"'的岗位要求，调整技能关键词的顺序和突出程度。"
+                    ]
+                };
+
+                // Animate score
+                let currentScore = 0;
+                const scoreInterval = setInterval(() => {
+                    currentScore++;
+                    scoreCircle.textContent = currentScore;
+                    scoreCircle.style.background = `conic-gradient(var(--primary-color) ${currentScore * 3.6}deg, var(--bg-secondary) 0deg)`;
+                    if (currentScore >= mockResults.score) {
+                        clearInterval(scoreInterval);
+                    }
+                }, 15);
+
+                strengthsList.innerHTML = mockResults.strengths.map(item => `<li>${item}</li>`).join('');
+                improvementsList.innerHTML = mockResults.improvements.map(item => `<li>${item}</li>`).join('');
+                
+                resultsArea.style.display = 'block';
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '分析简历';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

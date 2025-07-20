@@ -1,0 +1,209 @@
+[
+    {
+        "id": 1,
+        "title": "智能文案生成器",
+        "description": "输入关键词，快速生成高质量的广告文案、社交媒体帖子和博客文章。",
+        "icon": "fas fa-magic",
+        "category": "writing",
+        "tags": [
+            "营销",
+            "内容创作",
+            "AI写作"
+        ],
+        "url": "tools/tool-1.html"
+    },
+    {
+        "id": 2,
+        "title": "AI 艺术画廊",
+        "description": "将你的想法转化为独特的数字艺术品。支持多种艺术风格。",
+        "icon": "fas fa-palette",
+        "category": "image",
+        "tags": [
+            "艺术",
+            "设计",
+            "图像生成"
+        ],
+        "url": "tools/tool-2.html"
+    },
+    {
+        "id": 3,
+        "title": "代码片段助手",
+        "description": "根据自然语言描述，快速生成多种编程语言的代码片段。",
+        "icon": "fas fa-file-code",
+        "category": "code",
+        "tags": [
+            "开发",
+            "编程",
+            "效率"
+        ],
+        "url": "tools/tool-3.html"
+    },
+    {
+        "id": 4,
+        "title": "语音转文字",
+        "description": "高精度的语音识别服务，将音频文件或实时语音快速转换为文字。",
+        "icon": "fas fa-microphone-alt",
+        "category": "audio",
+        "tags": [
+            "转录",
+            "会议记录",
+            "效率"
+        ],
+        "url": "tools/tool-4.html"
+    },
+    {
+        "id": 5,
+        "title": "AI 视频剪辑",
+        "description": "自动识别视频中的精彩瞬间，智能剪辑和配乐，快速生成短视频。",
+        "icon": "fas fa-film",
+        "category": "video",
+        "tags": [
+            "视频编辑",
+            "内容创作"
+        ],
+        "url": "tools/tool-5.html"
+    },
+    {
+        "id": 6,
+        "title": "简历优化大师",
+        "description": "上传你的简历，AI 将分析并提供详细的优化建议，提升求职成功率。",
+        "icon": "fas fa-file-alt",
+        "category": "writing",
+        "tags": [
+            "求职",
+            "简历",
+            "职业发展"
+        ],
+        "url": "tools/tool-6.html"
+    },
+    {
+        "id": 7,
+        "title": "Logo 设计工坊",
+        "description": "只需几步，即可为您的品牌或项目生成专业且富有创意的 Logo。",
+        "icon": "fas fa-drafting-compass",
+        "category": "image",
+        "tags": [
+            "品牌设计",
+            "Logo",
+            "创意"
+        ],
+        "url": "tools/tool-7.html"
+    },
+    {
+        "id": 8,
+        "title": "SQL 查询生成器",
+        "description": "用自然语言描述你想要的数据，AI 自动生成复杂的 SQL 查询语句。",
+        "icon": "fas fa-database",
+        "category": "code",
+        "tags": [
+            "数据库",
+            "开发",
+            "SQL"
+        ],
+        "url": "tools/tool-8.html"
+    },
+    {
+        "id": 9,
+        "title": "播客背景音移除",
+        "description": "自动移除音频中的背景噪音和杂音，让你的播客声音更清晰。",
+        "icon": "fas fa-wind",
+        "category": "audio",
+        "tags": [
+            "音频处理",
+            "播客",
+            "降噪"
+        ],
+        "url": "tools/tool-9.html"
+    },
+    {
+        "id": 10,
+        "title": "AI 虚拟主播",
+        "description": "创建你自己的虚拟形象，用于直播、视频会议或在线教育。",
+        "icon": "fas fa-user-astronaut",
+        "category": "video",
+        "tags": [
+            "直播",
+            "虚拟形象",
+            "VTuber"
+        ],
+        "url": "tools/tool-10.html"
+    },
+    {
+        "id": 11,
+        "title": "学术论文润色",
+        "description": "针对学术论文的语法、风格和结构提供专业的 AI 润色和校对服务。",
+        "icon": "fas fa-graduation-cap",
+        "category": "writing",
+        "tags": [
+            "学术",
+            "论文",
+            "科研"
+        ],
+        "url": "tools/tool-11.html"
+    },
+    {
+        "id": 12,
+        "title": "老照片修复",
+        "description": "利用 AI 技术，自动修复模糊、破损的老照片，让回忆重现光彩。",
+        "icon": "fas fa-history",
+        "category": "image",
+        "tags": [
+            "照片修复",
+            "图像处理",
+            "怀旧"
+        ],
+        "url": "tools/tool-12.html"
+    },
+    {
+        "id": 13,
+        "title": "文章原创度检测",
+        "description": "输入一段文本，检测其在网络上的原创度，帮助您避免抄袭。",
+        "icon": "fas fa-search-plus",
+        "category": "writing",
+        "tags": [
+            "原创",
+            "检测",
+            "学术"
+        ],
+        "url": "tools/originality-checker.html"
+    },
+    {
+        "id": 14,
+        "title": "颜色选择器",
+        "description": "专业的颜色选择工具，支持多种颜色格式转换，包括HEX、RGB、HSL等。",
+        "icon": "fas fa-palette",
+        "category": "original",
+        "tags": [
+            "颜色",
+            "设计",
+            "工具"
+        ],
+        "url": "tools/color-picker.html"
+    },
+    {
+        "id": 15,
+        "title": "二维码生成器",
+        "description": "快速生成高质量的二维码，支持文本、链接、WiFi密码等多种内容类型。",
+        "icon": "fas fa-qrcode",
+        "category": "original",
+        "tags": [
+            "二维码",
+            "生成",
+            "分享"
+        ],
+        "url": "tools/qr-generator.html"
+    },
+    {
+        "id": 16,
+        "title": "JSON格式化",
+        "description": "美化和验证JSON数据，支持格式化、压缩、语法检查等功能。",
+        "icon": "fas fa-code",
+        "category": "original",
+        "tags": [
+            "JSON",
+            "格式化",
+            "开发"
+        ],
+        "url": "tools/json-formatter.html"
+    }
+]

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章原创度检测 - AI 工具集</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+        }
+        .tool-container {
+            max-width: 800px;
+            width: 90%;
+            padding: 40px;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+        h1 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 24px;
+        }
+        .tool-container button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) var(--transition-func);
+        }
+        .tool-container button:hover {
+            background-color: var(--secondary-color);
+        }
+        .back-link {
+            display: block;
+            margin-top: 32px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>文章原创度检测</h1>
+        <p>这是一个示例工具页面。您可以在此基础上构建您的原创度检测工具的完整功能。</p>
+        <textarea placeholder="请在此处粘贴需要检测的文本..."></textarea>
+        <button onclick="alert('检测功能开发中！')">开始检测</button>
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+</body>
+</html>

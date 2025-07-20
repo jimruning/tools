@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学术论文润色 - AI 工具集</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; background-color: var(--bg-secondary);
+            font-family: var(--font-family); padding: 40px 20px;
+        }
+        .tool-container {
+            width: 100%; max-width: 1200px; padding: 40px;
+            background-color: var(--bg-primary); border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        h1, p.subtitle { text-align: center; }
+        h1 { color: var(--text-primary); margin-bottom: 16px; }
+        p.subtitle { color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .editor-panel textarea, .editor-panel .result-box {
+            width: 100%; height: 500px; padding: 15px; border-radius: 8px;
+            border: 1px solid var(--border-color); font-size: 16px; line-height: 1.7;
+            font-family: 'Times New Roman', serif;
+        }
+        .editor-panel textarea { resize: none; }
+        .editor-panel .result-box { background-color: var(--bg-secondary); overflow-y: auto; }
+        .editor-panel h3 { text-align: center; margin-bottom: 10px; }
+
+        .action-bar { text-align: center; margin: 20px 0; }
+        .action-btn {
+            background-color: var(--primary-color); color: white; border: none;
+            padding: 14px 28px; border-radius: 8px; font-size: 16px; cursor: pointer;
+        }
+        
+        .result-box mark { background-color: #f1c40f; padding: 2px 0; border-radius: 3px; }
+        .result-box .insertion { color: #27ae60; font-weight: bold; text-decoration: underline; }
+
+        .back-link { display: block; margin-top: 32px; color: var(--primary-color); text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>学术论文润色</h1>
+        <p class="subtitle">粘贴您的论文段落，AI 将优化语法、风格和用词，并高亮显示修改建议。</p>
+
+        <div class="editor-layout">
+            <div class="editor-panel">
+                <h3>原文</h3>
+                <textarea id="original-text" placeholder="请在此处粘贴您的论文原文..."></textarea>
+            </div>
+            <div class="editor-panel">
+                <h3>润色后</h3>
+                <div id="polished-text" class="result-box"></div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="action-btn" id="polish-btn">开始润色</button>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script>
+        const polishBtn = document.getElementById('polish-btn');
+        const originalText = document.getElementById('original-text');
+        const polishedText = document.getElementById('polished-text');
+
+        polishBtn.addEventListener('click', () => {
+            const text = originalText.value;
+            if (!text.trim()) {
+                alert('请输入需要润色的文本！');
+                return;
+            }
+
+            polishBtn.disabled = true;
+            polishBtn.textContent = '处理中...';
+            polishedText.innerHTML = '';
+
+            // --- Simulate AI Processing ---
+            setTimeout(() => {
+                let processedText = text;
+
+                // Mock logic for polishing
+                processedText = processedText.replace(/很/g, '<mark>非常</mark>');
+                processedText = processedText.replace(/好/g, '<mark>有益的</mark>');
+                processedText = processedText.replace(/展示了/g, '<mark>揭示了</mark>');
+                processedText = processedText.replace(/这个实验/g, '该实验<span class="insertion">（设计精良）</span>');
+                
+                polishedText.innerHTML = processedText;
+
+                polishBtn.disabled = false;
+                polishBtn.textContent = '开始润色';
+            }, 2500);
+        });
+    </script>
+</body>
+</html>

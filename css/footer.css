@@ -1,0 +1,177 @@
+/* --- 页脚样式 --- */
+.site-footer {
+    background-color: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    padding: 24px 0;
+    margin-top: auto;
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.footer-logo i {
+    font-size: 20px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 24px;
+    margin: 12px 0;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    font-size: 14px;
+    transition: color var(--transition-speed) var(--transition-func);
+    position: relative;
+}
+
+.footer-links a:hover,
+.footer-links a.active {
+    color: var(--primary-color);
+}
+
+.footer-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+}
+
+.footer-copyright {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* 修改容器布局以支持页脚 */
+.container {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: 60px 1fr auto;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+    min-height: 100vh;
+    transition: grid-template-columns var(--transition-speed) var(--transition-func);
+}
+
+.container.nav-collapsed {
+    grid-template-columns: 60px 1fr;
+}
+
+.site-footer {
+    grid-area: footer;
+}
+
+/* 服务条款和隐私政策页面样式 */
+.terms-content,
+.privacy-content {
+    padding: 40px 24px;
+}
+
+.terms-container,
+.privacy-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 32px;
+}
+
+.terms-container h1,
+.privacy-container h1 {
+    font-size: 28px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.last-updated {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+}
+
+.terms-container section,
+.privacy-container section {
+    margin-bottom: 24px;
+}
+
+.terms-container h2,
+.privacy-container h2 {
+    font-size: 20px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.privacy-container h3 {
+    font-size: 18px;
+    color: var(--text-primary);
+    margin: 16px 0 8px;
+}
+
+.terms-container p,
+.privacy-container p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.terms-container ul,
+.privacy-container ul {
+    list-style: disc;
+    padding-left: 24px;
+    margin-bottom: 16px;
+}
+
+.terms-container li,
+.privacy-container li {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "main"
+            "footer";
+    }
+    
+    .terms-container,
+    .privacy-container {
+        padding: 24px 16px;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+}

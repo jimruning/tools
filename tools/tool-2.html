@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 艺术画廊 - AI 工具集</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+            font-family: var(--font-family);
+            padding: 40px 20px;
+        }
+        .tool-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        p.subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .generate-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .generate-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        .image-result-area {
+            margin-top: 32px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+        }
+        .image-result-area img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .download-container {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .download-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .download-btn.ready {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .back-link {
+            display: block;
+            margin-top: 32px;
+            color: var(--primary-color);
+            text-decoration: none;
+            text-align: center;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>AI 艺术画廊</h1>
+        <p class="subtitle">用文字描述您的想象，AI 将为您创作独一无二的艺术品。</p>
+
+        <div class="form-group">
+            <label for="prompt">画面描述 (Prompt)</label>
+            <textarea id="prompt" placeholder="例如：一只戴着宇航员头盔的猫，漂浮在宇宙中，赛博朋克风格"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="style">艺术风格</label>
+            <select id="style">
+                <option value="写实">写实</option>
+                <option value="动漫">动漫</option>
+                <option value="水彩">水彩</option>
+                <option value="像素艺术">像素艺术</option>
+                <option value="赛博朋克">赛博朋克</option>
+            </select>
+        </div>
+
+        <button class="generate-btn" id="generate-btn">生成图片</button>
+
+        <div class="image-result-area" id="image-result-area">
+            <p>在这里预览您生成的艺术品</p>
+        </div>
+        
+        <div class="download-container">
+            <a href="#" id="download-btn" class="download-btn" download="ai-artwork.png">下载图片</a>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script>
+        const generateBtn = document.getElementById('generate-btn');
+        const resultArea = document.getElementById('image-result-area');
+        const promptInput = document.getElementById('prompt');
+        const downloadBtn = document.getElementById('download-btn');
+
+        generateBtn.addEventListener('click', () => {
+            if (!promptInput.value.trim()) {
+                alert('请输入画面描述！');
+                return;
+            }
+
+            // --- Simulate AI Processing ---
+            resultArea.innerHTML = '<div class="spinner"></div>';
+            generateBtn.disabled = true;
+            downloadBtn.classList.remove('ready');
+
+            setTimeout(() => {
+                // In a real app, you would get an image URL from an API.
+                // Here, we use a placeholder image service for simulation.
+                const imageUrl = `https://picsum.photos/512/512?random=${Date.now()}`;
+                
+                const image = new Image();
+                image.onload = () => {
+                    resultArea.innerHTML = '';
+                    resultArea.appendChild(image);
+                    generateBtn.disabled = false;
+                    downloadBtn.href = imageUrl;
+                    downloadBtn.classList.add('ready');
+                };
+                image.onerror = () => {
+                    resultArea.innerHTML = '<p>图片加载失败，请重试。</p>';
+                    generateBtn.disabled = false;
+                };
+                image.src = imageUrl;
+
+            }, 3000); // 3-second delay
+        });
+    </script>
+</body>
+</html>

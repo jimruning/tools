@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码片段助手 - AI 工具集</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- highlight.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+            font-family: var(--font-family);
+            padding: 40px 20px;
+        }
+        .tool-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        p.subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .generate-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .result-container {
+            margin-top: 32px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 32px;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+        }
+        code.hljs {
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 45px;
+            right: 15px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .copy-btn:hover {
+            opacity: 1;
+        }
+        .back-link {
+            display: block;
+            margin-top: 32px;
+            color: var(--primary-color);
+            text-decoration: none;
+            text-align: center;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>代码片段助手</h1>
+        <p class="subtitle">用自然语言描述您的需求，AI 将生成对应的代码片段。</p>
+
+        <div class="form-group">
+            <label for="description">功能描述</label>
+            <textarea id="description" placeholder="例如：一个检查字符串是否为回文的函数"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="language">选择语言</label>
+            <select id="language">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+            </select>
+        </div>
+
+        <button class="generate-btn" id="generate-btn">生成代码</button>
+
+        <div class="result-container" id="result-container" style="display: none;">
+            <pre><code id="code-output" class="hljs"></code></pre>
+            <button class="copy-btn" id="copy-btn" title="复制"><i class="far fa-copy"></i></button>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        const generateBtn = document.getElementById('generate-btn');
+        const resultContainer = document.getElementById('result-container');
+        const codeOutput = document.getElementById('code-output');
+        const copyBtn = document.getElementById('copy-btn');
+        const descriptionInput = document.getElementById('description');
+        const languageSelect = document.getElementById('language');
+
+        const mockCode = {
+            javascript: `function isPalindrome(str) {\n  const reversedStr = str.split('').reverse().join('');\n  return str === reversedStr;\n}`,
+            python: `def is_palindrome(s):\n  return s == s[::-1]`,
+            java: `public class Palindrome {\n    public static boolean isPalindrome(String str) {\n        StringBuilder reversed = new StringBuilder(str).reverse();\n        return str.equals(reversed.toString());\n    }\n}`,
+            cpp: `#include <string>\n#include <algorithm>\n\nbool is_palindrome(const std::string& s) {\n    std::string reversed_s = s;\n    std::reverse(reversed_s.begin(), reversed_s.end());\n    return s == reversed_s;\n}`
+        };
+
+        generateBtn.addEventListener('click', () => {
+            if (!descriptionInput.value.trim()) {
+                alert('请输入功能描述！');
+                return;
+            }
+
+            resultContainer.style.display = 'none';
+            generateBtn.disabled = true;
+            generateBtn.textContent = '生成中...';
+
+            setTimeout(() => {
+                const language = languageSelect.value;
+                codeOutput.textContent = mockCode[language];
+                codeOutput.className = `hljs language-${language}`; // Set language for highlight.js
+                
+                // Highlight the code
+                hljs.highlightElement(codeOutput);
+
+                resultContainer.style.display = 'block';
+                generateBtn.disabled = false;
+                generateBtn.textContent = '生成代码';
+            }, 2000);
+        });
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(codeOutput.textContent).then(() => {
+                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="far fa-copy"></i>';
+                }, 1500);
+            }).catch(err => {
+                console.error('复制失败: ', err);
+                alert('复制失败！');
+            });
+        });
+    </script>
+</body>
+</html>

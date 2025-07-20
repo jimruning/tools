@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 虚拟主播 - AI 工具集</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; background-color: var(--bg-secondary);
+            font-family: var(--font-family); padding: 40px 20px;
+        }
+        .tool-container {
+            width: 100%; max-width: 900px; padding: 40px;
+            background-color: var(--bg-primary); border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        h1, p.subtitle { text-align: center; }
+        h1 { color: var(--text-primary); margin-bottom: 16px; }
+        p.subtitle { color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .main-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .video-container { background-color: #000; border-radius: 8px; aspect-ratio: 16 / 9; display: flex; justify-content: center; align-items: center; }
+        .video-container video { width: 100%; height: 100%; border-radius: 8px; }
+        .video-container p { color: #666; }
+
+        .controls-container .form-group { margin-bottom: 20px; }
+        .controls-container label { display: block; font-weight: 500; margin-bottom: 8px; }
+        .controls-container textarea, .controls-container select {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        .controls-container textarea { min-height: 150px; resize: vertical; }
+        .action-btn {
+            width: 100%; background-color: var(--primary-color); color: white; border: none;
+            padding: 14px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px;
+        }
+        .action-btn:disabled { background-color: var(--text-muted); cursor: not-allowed; }
+
+        .back-link { display: block; margin-top: 32px; color: var(--primary-color); text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>AI 虚拟主播</h1>
+        <p class="subtitle">输入文本，选择声音，让您的虚拟形象为您播报。</p>
+
+        <div class="main-layout">
+            <div class="video-container" id="video-container">
+                <p>摄像头未开启</p>
+                <video id="video-feed" autoplay muted playsinline></video>
+            </div>
+            <div class="controls-container">
+                <div class="form-group">
+                    <label for="script-text">播报文稿</label>
+                    <textarea id="script-text" placeholder="在此输入您想让主播说的话..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="voice-select">选择声音</label>
+                    <select id="voice-select"></select>
+                </div>
+                <button class="action-btn" id="speak-btn" disabled>开始播报</button>
+                <button class="action-btn" id="start-cam-btn">开启摄像头</button>
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script>
+        const startCamBtn = document.getElementById('start-cam-btn');
+        const videoFeed = document.getElementById('video-feed');
+        const videoContainer = document.getElementById('video-container');
+        const speakBtn = document.getElementById('speak-btn');
+        const scriptText = document.getElementById('script-text');
+        const voiceSelect = document.getElementById('voice-select');
+
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = speechSynthesis.getVoices();
+            voiceSelect.innerHTML = '';
+            
+            // Add Chinese voices first
+            voices.forEach((voice, i) => {
+                if(voice.lang.includes('zh')) {
+                    const option = document.createElement('option');
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    option.setAttribute('data-lang', voice.lang);
+                    option.setAttribute('data-name', voice.name);
+                    voiceSelect.appendChild(option);
+                }
+            });
+            
+            // If no Chinese voices, add all available voices
+            if(voiceSelect.children.length === 0) {
+                voices.forEach((voice, i) => {
+                    const option = document.createElement('option');
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    option.setAttribute('data-lang', voice.lang);
+                    option.setAttribute('data-name', voice.name);
+                    voiceSelect.appendChild(option);
+                });
+            }
+            
+            // Enable speak button if voices are available
+            checkSpeakButtonState();
+        }
+
+        // Function to check if speak button should be enabled
+        function checkSpeakButtonState() {
+            const hasText = scriptText.value.trim() !== '';
+            const hasVoice = voiceSelect.children.length > 0;
+            speakBtn.disabled = !(hasText && hasVoice);
+        }
+        
+        // Add event listeners for text input and voice selection
+        scriptText.addEventListener('input', checkSpeakButtonState);
+        voiceSelect.addEventListener('change', checkSpeakButtonState);
+        
+        // --- Webcam Logic ---
+        startCamBtn.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoFeed.srcObject = stream;
+                videoContainer.querySelector('p').style.display = 'none';
+                startCamBtn.textContent = '摄像头已开启';
+                startCamBtn.disabled = true;
+            } catch (err) {
+                console.error("摄像头访问失败:", err);
+                videoContainer.querySelector('p').textContent = '无法访问摄像头';
+            }
+        });
+
+        // --- Speech Synthesis Logic ---
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+
+        speakBtn.addEventListener('click', () => {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+                return;
+            }
+            
+            const text = scriptText.value.trim();
+            if (text !== '' && voiceSelect.selectedOptions.length > 0) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                const selectedOption = voiceSelect.selectedOptions[0];
+                const selectedVoiceName = selectedOption.getAttribute('data-name');
+                const selectedVoice = voices.find(voice => voice.name === selectedVoiceName);
+                
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                utterance.onstart = () => { 
+                    speakBtn.textContent = '正在播报...'; 
+                    speakBtn.disabled = true; 
+                };
+                utterance.onend = () => { 
+                    speakBtn.textContent = '开始播报'; 
+                    checkSpeakButtonState();
+                };
+                utterance.onerror = () => {
+                    speakBtn.textContent = '开始播报';
+                    checkSpeakButtonState();
+                };
+                
+                speechSynthesis.speak(utterance);
+            }
+        });
+    </script>
+</body>
+</html>

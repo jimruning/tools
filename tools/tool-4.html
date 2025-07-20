@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语音转文字 - AI 工具集</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+            font-family: var(--font-family);
+            padding: 40px 20px;
+        }
+        .tool-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        h1, p.subtitle { text-align: center; }
+        h1 { color: var(--text-primary); margin-bottom: 16px; }
+        p.subtitle { color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .input-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .input-box {
+            flex: 1;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .input-box:hover { background-color: var(--bg-secondary); }
+        .input-box i { font-size: 40px; color: var(--primary-color); margin-bottom: 16px; }
+        .input-box p { color: var(--text-muted); }
+        #audio-file-input { display: none; }
+
+        .status-bar {
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+            min-height: 24px;
+        }
+        .status-bar .recording { color: #e74c3c; font-weight: bold; }
+
+        .result-container {
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+        .result-container textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 16px;
+            resize: vertical;
+        }
+        .result-actions {
+            text-align: right;
+            margin-top: 16px;
+        }
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .back-link { display: block; margin-top: 32px; color: var(--primary-color); text-decoration: none; text-align: center; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>语音转文字</h1>
+        <p class="subtitle">上传音频文件或直接录音，AI 将为您精准转写为文字。</p>
+
+        <div class="input-area">
+            <div class="input-box" id="upload-box">
+                <i class="fas fa-file-audio"></i>
+                <p>上传音频文件</p>
+            </div>
+            <input type="file" id="audio-file-input" accept="audio/*">
+            <div class="input-box" id="record-box">
+                <i class="fas fa-microphone"></i>
+                <p id="record-text">点击开始录音</p>
+            </div>
+        </div>
+
+        <div class="status-bar" id="status-bar">选择一种方式开始</div>
+
+        <div class="result-container">
+            <textarea id="result-text" placeholder="转写结果将显示在这里..."></textarea>
+            <div class="result-actions">
+                <button class="copy-btn" id="copy-btn">复制文本</button>
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script>
+        const uploadBox = document.getElementById('upload-box');
+        const audioFileInput = document.getElementById('audio-file-input');
+        const recordBox = document.getElementById('record-box');
+        const recordText = document.getElementById('record-text');
+        const statusBar = document.getElementById('status-bar');
+        const resultText = document.getElementById('result-text');
+        const copyBtn = document.getElementById('copy-btn');
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // --- File Upload Logic ---
+        uploadBox.addEventListener('click', () => audioFileInput.click());
+        audioFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                statusBar.textContent = `已上传文件：${file.name}，正在处理...`;
+                simulateTranscription();
+            }
+        });
+
+        // --- Recording Logic ---
+        recordBox.addEventListener('click', async () => {
+            if (isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordBox.style.borderColor = 'var(--border-color)';
+                recordText.textContent = '点击开始录音';
+            } else {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+                    isRecording = true;
+                    audioChunks = [];
+                    
+                    recordBox.style.borderColor = '#e74c3c';
+                    recordText.textContent = '正在录音... 点击停止';
+                    statusBar.innerHTML = '<span class="recording">录音中...</span>';
+
+                    mediaRecorder.addEventListener("dataavailable", event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener("stop", () => {
+                        statusBar.textContent = '录音结束，正在处理...';
+                        simulateTranscription();
+                        stream.getTracks().forEach(track => track.stop());
+                    });
+
+                } catch (err) {
+                    console.error("麦克风访问失败:", err);
+                    statusBar.textContent = '无法访问麦克风，请检查权限。';
+                }
+            }
+        });
+
+        // --- Common Logic ---
+        function simulateTranscription() {
+            resultText.value = '';
+            setTimeout(() => {
+                statusBar.textContent = '转写完成！';
+                resultText.value = `这里是模拟生成的语音转写结果。在真实的应用中，这里会显示您上传的音频文件或实时录音经过AI模型处理后输出的精确文字记录。例如，它能够区分不同的说话人，并添加适当的标点符号。`;
+            }, 3000);
+        }
+
+        copyBtn.addEventListener('click', () => {
+            if (!resultText.value) return;
+            navigator.clipboard.writeText(resultText.value).then(() => {
+                copyBtn.textContent = '已复制!';
+                setTimeout(() => { copyBtn.textContent = '复制文本'; }, 1500);
+            }).catch(err => alert('复制失败!'));
+        });
+    </script>
+</body>
+</html>

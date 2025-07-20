@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo 设计工坊 - AI 工具集</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; background-color: var(--bg-secondary);
+            font-family: var(--font-family); padding: 40px 20px;
+        }
+        .tool-container {
+            width: 100%; max-width: 900px; padding: 40px;
+            background-color: var(--bg-primary); border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        h1, p.subtitle { text-align: center; }
+        h1 { color: var(--text-primary); margin-bottom: 16px; }
+        p.subtitle { color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .wizard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .color-palette, .icon-selection { display: flex; flex-wrap: wrap; gap: 10px; }
+        .color-swatch, .icon-box {
+            width: 40px; height: 40px; border-radius: 8px; cursor: pointer;
+            border: 2px solid transparent; transition: border-color 0.3s;
+        }
+        .icon-box { border: 2px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 20px; }
+        .color-swatch.selected, .icon-box.selected { border-color: var(--primary-color); }
+
+        .action-btn {
+            width: 100%; background-color: var(--primary-color); color: white; border: none;
+            padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer;
+        }
+        
+        .results-area { display: none; margin-top: 32px; border-top: 1px solid var(--border-color); padding-top: 32px; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .logo-card {
+            background-color: var(--bg-secondary); border-radius: 8px; padding: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            gap: 15px; aspect-ratio: 1 / 1;
+        }
+        .logo-icon { font-size: 48px; }
+        .logo-text { font-size: 20px; font-weight: bold; text-align: center; }
+
+        .back-link { display: block; margin-top: 32px; color: var(--primary-color); text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <h1>Logo 设计工坊</h1>
+        <p class="subtitle">只需三步，AI 即可为您的品牌生成专业 Logo。</p>
+
+        <div class="wizard">
+            <div class="form-group">
+                <label for="brand-name">1. 品牌名称</label>
+                <input type="text" id="brand-name" placeholder="例如：Cline">
+            </div>
+            <div class="form-group">
+                <label>2. 选择色调</label>
+                <div class="color-palette" id="color-palette"></div>
+            </div>
+            <div class="form-group">
+                <label>3. 选择图标</label>
+                <div class="icon-selection" id="icon-selection"></div>
+            </div>
+        </div>
+
+        <button class="action-btn" id="generate-btn">生成 Logo</button>
+
+        <div class="results-area" id="results-area">
+            <div class="results-grid" id="results-grid"></div>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script>
+        const brandNameInput = document.getElementById('brand-name');
+        const colorPalette = document.getElementById('color-palette');
+        const iconSelection = document.getElementById('icon-selection');
+        const generateBtn = document.getElementById('generate-btn');
+        const resultsArea = document.getElementById('results-area');
+        const resultsGrid = document.getElementById('results-grid');
+
+        const colors = [
+            { name: 'tech', bg: '#3498db', text: '#ffffff' },
+            { name: 'nature', bg: '#2ecc71', text: '#ffffff' },
+            { name: 'bold', bg: '#e74c3c', text: '#ffffff' },
+            { name: 'elegant', bg: '#f1c40f', text: '#333333' },
+            { name: 'corp', bg: '#34495e', text: '#ffffff' }
+        ];
+        const icons = ['fa-brain', 'fa-leaf', 'fa-rocket', 'fa-crown', 'fa-globe'];
+
+        // --- Setup UI ---
+        colors.forEach(color => {
+            const swatch = document.createElement('div');
+            swatch.className = 'color-swatch';
+            swatch.style.backgroundColor = color.bg;
+            swatch.dataset.color = color.name;
+            colorPalette.appendChild(swatch);
+        });
+
+        icons.forEach(icon => {
+            const box = document.createElement('div');
+            box.className = 'icon-box';
+            box.dataset.icon = icon;
+            box.innerHTML = `<i class="fas ${icon}"></i>`;
+            iconSelection.appendChild(box);
+        });
+
+        // --- Selection Logic ---
+        let selectedColor = null;
+        let selectedIcon = null;
+
+        colorPalette.addEventListener('click', (e) => {
+            const swatch = e.target.closest('.color-swatch');
+            if (!swatch) return;
+            selectedColor = colors.find(c => c.name === swatch.dataset.color);
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            swatch.classList.add('selected');
+        });
+
+        iconSelection.addEventListener('click', (e) => {
+            const box = e.target.closest('.icon-box');
+            if (!box) return;
+            selectedIcon = box.dataset.icon;
+            document.querySelectorAll('.icon-box').forEach(b => b.classList.remove('selected'));
+            box.classList.add('selected');
+        });
+
+        // --- Generation Logic ---
+        generateBtn.addEventListener('click', () => {
+            const brandName = brandNameInput.value.trim();
+            if (!brandName || !selectedColor || !selectedIcon) {
+                alert('请填写品牌名称并选择色调和图标！');
+                return;
+            }
+
+            generateBtn.disabled = true;
+            generateBtn.textContent = '生成中...';
+            resultsGrid.innerHTML = '';
+
+            setTimeout(() => {
+                resultsArea.style.display = 'block';
+                for (let i = 0; i < 6; i++) {
+                    const logoCard = document.createElement('div');
+                    logoCard.className = 'logo-card';
+                    
+                    // Simple variations
+                    const flexDirection = i % 2 === 0 ? 'column' : 'row';
+                    const fontWeight = i % 3 === 0 ? '300' : (i % 3 === 1 ? '500' : '700');
+
+                    logoCard.style.backgroundColor = selectedColor.bg;
+                    logoCard.style.color = selectedColor.text;
+                    logoCard.style.flexDirection = flexDirection;
+                    
+                    logoCard.innerHTML = `
+                        <div class="logo-icon"><i class="fas ${selectedIcon}"></i></div>
+                        <div class="logo-text" style="font-weight: ${fontWeight};">${brandName}</div>
+                    `;
+                    resultsGrid.appendChild(logoCard);
+                }
+
+                generateBtn.disabled = false;
+                generateBtn.textContent = '生成 Logo';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

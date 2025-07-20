@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码生成器 - AI 工具集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/reset.css">
+
+    <style>
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: var(--text-secondary);
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .input-section {
+            background-color: var(--bg-secondary);
+            padding: 25px;
+            border-radius: var(--border-radius);
+        }
+        .output-section {
+            background-color: var(--bg-secondary);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .type-btn {
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .type-btn.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .type-btn:hover {
+            border-color: var(--primary-color);
+        }
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+        .generate-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        .generate-btn:disabled {
+            background-color: var(--text-muted);
+            cursor: not-allowed;
+        }
+        .qr-display {
+            margin-bottom: 20px;
+        }
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        .download-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .download-btn {
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+        .download-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        .settings-section {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .back-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: background-color var(--transition-speed);
+        }
+        .back-link:hover {
+            background-color: var(--secondary-color);
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .download-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-qrcode"></i> 二维码生成器</h1>
+            <p>快速生成高质量的二维码，支持多种内容类型</p>
+        </div>
+
+        <div class="settings-section">
+            <h3>二维码设置</h3>
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label for="qrSize">尺寸 (像素)</label>
+                    <select id="qrSize">
+                        <option value="200">200x200</option>
+                        <option value="300" selected>300x300</option>
+                        <option value="400">400x400</option>
+                        <option value="500">500x500</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="errorLevel">容错级别</label>
+                    <select id="errorLevel">
+                        <option value="L">低 (7%)</option>
+                        <option value="M" selected>中 (15%)</option>
+                        <option value="Q">较高 (25%)</option>
+                        <option value="H">高 (30%)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="foregroundColor">前景色</label>
+                    <input type="color" id="foregroundColor" value="#000000">
+                </div>
+                <div class="form-group">
+                    <label for="backgroundColor">背景色</label>
+                    <input type="color" id="backgroundColor" value="#ffffff">
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h3>内容类型</h3>
+                <div class="type-selector">
+                    <div class="type-btn active" data-type="text">
+                        <i class="fas fa-font"></i><br>文本
+                    </div>
+                    <div class="type-btn" data-type="url">
+                        <i class="fas fa-link"></i><br>网址
+                    </div>
+                    <div class="type-btn" data-type="wifi">
+                        <i class="fas fa-wifi"></i><br>WiFi
+                    </div>
+                    <div class="type-btn" data-type="contact">
+                        <i class="fas fa-user"></i><br>联系人
+                    </div>
+                </div>
+
+                <!-- 文本输入 -->
+                <div id="textInput" class="input-form">
+                    <div class="form-group">
+                        <label for="textContent">文本内容</label>
+                        <textarea id="textContent" placeholder="输入要生成二维码的文本内容..."></textarea>
+                    </div>
+                </div>
+
+                <!-- URL输入 -->
+                <div id="urlInput" class="input-form hidden">
+                    <div class="form-group">
+                        <label for="urlContent">网址</label>
+                        <input type="url" id="urlContent" placeholder="https://example.com">
+                    </div>
+                </div>
+
+                <!-- WiFi输入 -->
+                <div id="wifiInput" class="input-form hidden">
+                    <div class="form-group">
+                        <label for="wifiSSID">网络名称 (SSID)</label>
+                        <input type="text" id="wifiSSID" placeholder="WiFi网络名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="wifiPassword">密码</label>
+                        <input type="password" id="wifiPassword" placeholder="WiFi密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="wifiSecurity">加密类型</label>
+                        <select id="wifiSecurity">
+                            <option value="WPA">WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">无密码</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 联系人输入 -->
+                <div id="contactInput" class="input-form hidden">
+                    <div class="form-group">
+                        <label for="contactName">姓名</label>
+                        <input type="text" id="contactName" placeholder="联系人姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactPhone">电话</label>
+                        <input type="tel" id="contactPhone" placeholder="电话号码">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">邮箱</label>
+                        <input type="email" id="contactEmail" placeholder="邮箱地址">
+                    </div>
+                </div>
+
+                <button class="generate-btn" onclick="generateQR()">生成二维码</button>
+            </div>
+
+            <div class="output-section">
+                <h3>生成结果</h3>
+                <div class="qr-display">
+                    <div id="qrcode"></div>
+                </div>
+                <div class="download-section">
+                    <button class="download-btn" onclick="downloadQR('png')">下载 PNG</button>
+                    <button class="download-btn" onclick="downloadQR('svg')">下载 SVG</button>
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> 返回主页
+        </a>
+    </div>
+
+    <script>
+        let currentQRData = '';
+        let currentType = 'text';
+
+        // 类型切换
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 移除所有active类
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                // 添加active类到当前按钮
+                btn.classList.add('active');
+                
+                // 隐藏所有输入表单
+                document.querySelectorAll('.input-form').forEach(form => form.classList.add('hidden'));
+                
+                // 显示对应的输入表单
+                const type = btn.dataset.type;
+                currentType = type;
+                document.getElementById(type + 'Input').classList.remove('hidden');
+            });
+        });
+
+        // 生成二维码
+        function generateQR() {
+            let content = '';
+            
+            switch(currentType) {
+                case 'text':
+                    content = document.getElementById('textContent').value;
+                    break;
+                case 'url':
+                    content = document.getElementById('urlContent').value;
+                    break;
+                case 'wifi':
+                    const ssid = document.getElementById('wifiSSID').value;
+                    const password = document.getElementById('wifiPassword').value;
+                    const security = document.getElementById('wifiSecurity').value;
+                    content = `WIFI:T:${security};S:${ssid};P:${password};;`;
+                    break;
+                case 'contact':
+                    const name = document.getElementById('contactName').value;
+                    const phone = document.getElementById('contactPhone').value;
+                    const email = document.getElementById('contactEmail').value;
+                    content = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
+                    break;
+            }
+
+            if (!content.trim()) {
+                alert('请输入内容！');
+                return;
+            }
+
+            currentQRData = content;
+            
+            // 清空之前的二维码
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            
+            // 使用在线 API 生成二维码
+            const size = document.getElementById('qrSize').value;
+            const foregroundColor = document.getElementById('foregroundColor').value.replace('#', '');
+            const backgroundColor = document.getElementById('backgroundColor').value.replace('#', '');
+            
+            // 使用 qr-server.com API
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(content)}&color=${foregroundColor}&bgcolor=${backgroundColor}`;
+            
+            const img = document.createElement('img');
+            img.src = qrUrl;
+            img.alt = '二维码';
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            
+            img.onload = function() {
+                console.log('二维码生成成功！');
+            };
+            
+            img.onerror = function() {
+                qrContainer.innerHTML = '<p style="color: red;">二维码生成失败，请检查网络连接</p>';
+            };
+            
+            qrContainer.appendChild(img);
+        }
+
+        // 下载二维码
+        function downloadQR(format) {
+            if (!currentQRData) {
+                alert('请先生成二维码！');
+                return;
+            }
+            
+            const size = document.getElementById('qrSize').value;
+            const foregroundColor = document.getElementById('foregroundColor').value.replace('#', '');
+            const backgroundColor = document.getElementById('backgroundColor').value.replace('#', '');
+            
+            if (format === 'png') {
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(currentQRData)}&color=${foregroundColor}&bgcolor=${backgroundColor}&format=png`;
+                
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = qrUrl;
+                link.click();
+            } else if (format === 'svg') {
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(currentQRData)}&color=${foregroundColor}&bgcolor=${backgroundColor}&format=svg`;
+                
+                fetch(qrUrl)
+                    .then(response => response.text())
+                    .then(svgContent => {
+                        const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.download = 'qrcode.svg';
+                        link.href = url;
+                        link.click();
+                        URL.revokeObjectURL(url);
+                    })
+                    .catch(error => {
+                        alert('下载SVG时出错：' + error.message);
+                    });
+            }
+        }
+
+        // 初始化：生成示例二维码
+        window.addEventListener('load', () => {
+            document.getElementById('textContent').value = '欢迎使用二维码生成器！';
+            generateQR();
+        });
+    </script>
+</body>
+</html>
