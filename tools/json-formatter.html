@@ -338,7 +338,9 @@
         </a>
     </div>
 
-    <script>
+    <script type="module">
+        import { analyzeJSON, sortObjectKeys } from '../js/utils/jsonFormatterUtils.js';
+
         // 示例JSON数据
         const sampleJSON = {
             "name": "张三",
@@ -355,13 +357,12 @@
             "lastLogin": "2024-01-15T10:30:00Z"
         };
 
-        // 更新统计信息
         function updateStats() {
             const input = document.getElementById('inputJSON').value;
             const charCount = input.length;
-            
+
             document.getElementById('charCount').textContent = `字符数: ${charCount}`;
-            
+
             try {
                 if (input.trim()) {
                     const parsed = JSON.parse(input);
@@ -376,29 +377,17 @@
                 // 忽略解析错误，保持之前的统计
             }
         }
+        window.updateStats = updateStats;
 
-        // 分析JSON结构
-        function analyzeJSON(obj, stats = { objects: 0, arrays: 0 }) {
-            if (Array.isArray(obj)) {
-                stats.arrays++;
-                obj.forEach(item => analyzeJSON(item, stats));
-            } else if (typeof obj === 'object' && obj !== null) {
-                stats.objects++;
-                Object.values(obj).forEach(value => analyzeJSON(value, stats));
-            }
-            return stats;
-        }
-
-        // 显示状态
         function showStatus(message, type = 'info') {
             const statusText = document.getElementById('statusText');
             const statusItem = statusText.parentElement;
-            
+
             statusText.textContent = message;
-            
+
             // 移除之前的状态类
             statusItem.classList.remove('status-valid', 'status-invalid', 'status-warning');
-            
+
             // 添加新的状态类
             if (type === 'success') {
                 statusItem.classList.add('status-valid');
@@ -409,40 +398,38 @@
             }
         }
 
-        // 显示错误
         function showError(message) {
             const errorPanel = document.getElementById('errorPanel');
             const errorMessage = document.getElementById('errorMessage');
-            
+
             errorMessage.textContent = message;
             errorPanel.classList.add('show');
-            
+
             setTimeout(() => {
                 errorPanel.classList.remove('show');
             }, 5000);
         }
 
-        // 格式化JSON
         function formatJSON() {
             const input = document.getElementById('inputJSON').value.trim();
-            
+
             if (!input) {
                 showError('请输入JSON数据');
                 return;
             }
-            
+
             try {
                 const parsed = JSON.parse(input);
                 const indentSize = document.getElementById('indentSize').value;
                 const sortKeys = document.getElementById('sortKeys').value === 'true';
-                
+
                 let formatted;
                 if (sortKeys) {
                     formatted = JSON.stringify(sortObjectKeys(parsed), null, indentSize === '\t' ? '\t' : parseInt(indentSize));
                 } else {
                     formatted = JSON.stringify(parsed, null, indentSize === '\t' ? '\t' : parseInt(indentSize));
                 }
-                
+
                 document.getElementById('outputJSON').value = formatted;
                 showStatus('JSON格式化成功', 'success');
             } catch (error) {
@@ -450,20 +437,20 @@
                 showStatus('JSON格式错误', 'error');
             }
         }
+        window.formatJSON = formatJSON;
 
-        // 压缩JSON
         function compressJSON() {
             const input = document.getElementById('inputJSON').value.trim();
-            
+
             if (!input) {
                 showError('请输入JSON数据');
                 return;
             }
-            
+
             try {
                 const parsed = JSON.parse(input);
                 const compressed = JSON.stringify(parsed);
-                
+
                 document.getElementById('outputJSON').value = compressed;
                 showStatus('JSON压缩成功', 'success');
             } catch (error) {
@@ -471,16 +458,16 @@
                 showStatus('JSON格式错误', 'error');
             }
         }
+        window.compressJSON = compressJSON;
 
-        // 验证JSON
         function validateJSON() {
             const input = document.getElementById('inputJSON').value.trim();
-            
+
             if (!input) {
                 showError('请输入JSON数据');
                 return;
             }
-            
+
             try {
                 JSON.parse(input);
                 showStatus('JSON格式有效', 'success');
@@ -490,77 +477,63 @@
                 showStatus('JSON格式无效', 'error');
             }
         }
+        window.validateJSON = validateJSON;
 
-        // 排序对象键
-        function sortObjectKeys(obj) {
-            if (Array.isArray(obj)) {
-                return obj.map(sortObjectKeys);
-            } else if (typeof obj === 'object' && obj !== null) {
-                const sorted = {};
-                Object.keys(obj).sort().forEach(key => {
-                    sorted[key] = sortObjectKeys(obj[key]);
-                });
-                return sorted;
-            }
-            return obj;
-        }
-
-        // 复制输出
         function copyOutput() {
             const output = document.getElementById('outputJSON');
-            
+
             if (!output.value.trim()) {
                 showError('没有可复制的内容');
                 return;
             }
-            
+
             output.select();
             document.execCommand('copy');
             showStatus('已复制到剪贴板', 'success');
         }
+        window.copyOutput = copyOutput;
 
-        // 下载JSON
         function downloadJSON() {
             const output = document.getElementById('outputJSON').value;
-            
+
             if (!output.trim()) {
                 showError('没有可下载的内容');
                 return;
             }
-            
+
             const blob = new Blob([output], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            
+
             link.href = url;
             link.download = 'formatted.json';
             link.click();
-            
+
             URL.revokeObjectURL(url);
             showStatus('文件下载成功', 'success');
         }
+        window.downloadJSON = downloadJSON;
 
-        // 加载示例
         function loadSample() {
             document.getElementById('inputJSON').value = JSON.stringify(sampleJSON, null, 2);
             updateStats();
             showStatus('示例数据已加载', 'success');
         }
+        window.loadSample = loadSample;
 
-        // 清空输入
         function clearInput() {
             document.getElementById('inputJSON').value = '';
             updateStats();
             showStatus('输入已清空', 'success');
         }
+        window.clearInput = clearInput;
 
-        // 清空输出
         function clearOutput() {
             document.getElementById('outputJSON').value = '';
             showStatus('输出已清空', 'success');
         }
+        window.clearOutput = clearOutput;
 
-        // 清空所有
         function clearAll() {
             if (confirm('确定要清空所有内容吗？')) {
                 clearInput();
@@ -568,12 +541,13 @@
                 showStatus('所有内容已清空', 'success');
             }
         }
+        window.clearAll = clearAll;
 
-        // 初始化
         window.addEventListener('load', () => {
             updateStats();
             showStatus('就绪');
         });
     </script>
+
 </body>
 </html>
