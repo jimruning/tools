@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生物等效性样本量计算 | Bioequivalence Sample Size Calculator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-bottom: 3px solid #667eea;
+    }
+    header h1 { color: #333; font-size: 1.8em; margin: 0; }
+    header p { color: #666; font-size: 0.95em; margin-top: 5px; }
+    header .back-link {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.9em;
+    }
+    header .back-link:hover { text-decoration: underline; }
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 900px;
+      width: 100%;
+    }
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #eee;
+    }
+    .tab-button {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.3s;
+    }
+    .tab-button.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    .tab-button:hover { color: #667eea; }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 0.95em;
+    }
+    .form-group .hint {
+      font-size: 0.85em;
+      color: #888;
+      margin-top: 4px;
+    }
+    .form-group input {
+      padding: 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    button {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      flex: 1;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    .btn-secondary:hover { background: #e0e0e0; }
+    .result-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+      display: none;
+    }
+    .result-section.show {
+      display: block;
+      animation: slideIn 0.3s;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .result-title {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .result-item {
+      margin-bottom: 18px;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      border-left: 3px solid #667eea;
+    }
+    .result-item .label {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 0.95em;
+    }
+    .result-item .value {
+      font-size: 1.4em;
+      font-weight: 700;
+      color: #333;
+      margin-top: 4px;
+    }
+    .result-item .detail {
+      font-size: 0.9em;
+      color: #888;
+      margin-top: 6px;
+    }
+    .info-box {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: #666;
+    }
+    .info-box strong { color: #f57f17; }
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 30px 0;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+      header { padding: 15px 20px; }
+      header h1 { font-size: 1.4em; }
+      main { padding: 20px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="../index.html" class="back-link"> 返回工具列表</a>
+    <h1>生物等效性样本量计算</h1>
+    <p>Bioequivalence Sample Size Calculator - 临床试验设计工具</p>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="tabs">
+        <button class="tab-button active" data-tab="mean-equivalence">两样本均数等效检验</button>
+        <button class="tab-button" data-tab="proportion-equivalence">两样本率等效检验</button>
+        <button class="tab-button" data-tab="rsabe">RSABE</button>
+      </div>
+
+      <!-- 两样本均数等效检验 -->
+      <div id="mean-equivalence" class="tab-content active">
+        <div class="info-box">
+          <strong>两样本均数等效检验说明：</strong>用于检验试验制剂与参比制剂的药代动力学参数（如AUC、Cmax）是否等效
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="me_mu_t">试验组均数 (μ_T)</label>
+            <input type="number" id="me_mu_t" value="100" step="0.1">
+            <div class="hint">试验制剂的平均药代参数</div>
+          </div>
+
+          <div class="form-group">
+            <label for="me_mu_r">参比组均数 (μ_R)</label>
+            <input type="number" id="me_mu_r" value="100" step="0.1">
+            <div class="hint">参比制剂的平均药代参数</div>
+          </div>
+
+          <div class="form-group">
+            <label for="me_cv">变异系数 (CV)</label>
+            <input type="number" id="me_cv" value="0.25" min="0" max="1" step="0.01">
+            <div class="hint">组内的变异系数，通常为0.2-0.4</div>
+          </div>
+
+          <div class="form-group">
+            <label for="me_delta">等效界限 (Δ)</label>
+            <input type="number" id="me_delta" value="0.2" min="0" step="0.01">
+            <div class="hint">等效接受区间，通常为0.8-1.25的ln值范围</div>
+          </div>
+
+          <div class="form-group">
+            <label for="me_alpha">显著性水平 (α)</label>
+            <input type="number" id="me_alpha" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">双侧检验，常用0.05</div>
+          </div>
+
+          <div class="form-group">
+            <label for="me_power">统计功效 (1-β)</label>
+            <input type="number" id="me_power" value="0.8" min="0" max="1" step="0.01">
+            <div class="hint">推荐值为0.8-0.9</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="calculateMeanEquivalence()">计算样本量</button>
+          <button class="btn-secondary" onclick="resetMeanEquivalence()">重置</button>
+        </div>
+
+        <div id="me-result" class="result-section">
+          <div class="result-title">两样本均数等效检验结果</div>
+          <div id="me-result-content"></div>
+        </div>
+      </div>
+
+      <!-- 两样本率等效检验 -->
+      <div id="proportion-equivalence" class="tab-content">
+        <div class="info-box">
+          <strong>两样本率等效检验说明：</strong>用于检验试验制剂与参比制剂的等效性（适用于二分类结局）
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="pe_p1">试验组有效率 (P1)</label>
+            <input type="number" id="pe_p1" value="0.85" min="0" max="1" step="0.01">
+            <div class="hint">试验制剂的有效率</div>
+          </div>
+
+          <div class="form-group">
+            <label for="pe_p2">参比组有效率 (P2)</label>
+            <input type="number" id="pe_p2" value="0.85" min="0" max="1" step="0.01">
+            <div class="hint">参比制剂的有效率</div>
+          </div>
+
+          <div class="form-group">
+            <label for="pe_delta">等效界限 (Δ)</label>
+            <input type="number" id="pe_delta" value="0.1" min="0" max="1" step="0.01">
+            <div class="hint">等效接受区间的半宽度</div>
+          </div>
+
+          <div class="form-group">
+            <label for="pe_alpha">显著性水平 (α)</label>
+            <input type="number" id="pe_alpha" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">双侧检验，常用0.05</div>
+          </div>
+
+          <div class="form-group">
+            <label for="pe_power">统计功效 (1-β)</label>
+            <input type="number" id="pe_power" value="0.8" min="0" max="1" step="0.01">
+            <div class="hint">推荐值为0.8-0.9</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="calculateProportionEquivalence()">计算样本量</button>
+          <button class="btn-secondary" onclick="resetProportionEquivalence()">重置</button>
+        </div>
+
+        <div id="pe-result" class="result-section">
+          <div class="result-title">两样本率等效检验结果</div>
+          <div id="pe-result-content"></div>
+        </div>
+      </div>
+
+      <!-- RSABE -->
+      <div id="rsabe" class="tab-content">
+        <div class="info-box">
+          <strong>RSABE区间界限计算说明：</strong>Reference Scaled Average Bioequivalence - 用于计算高变异性药物的生物等效性接受区间界限
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="rsabe_sd">标准差 (SD)</label>
+            <input type="number" id="rsabe_sd" value="30" min="0" step="0.1">
+            <div class="hint">参比制剂的标准差，用于计算CV</div>
+          </div>
+
+          <div class="form-group">
+            <label for="rsabe_mean">均数 (Mean)</label>
+            <input type="number" id="rsabe_mean" value="100" min="0" step="0.1">
+            <div class="hint">参比制剂的平均值，用于计算CV</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="calculateRSABE()">计算区间界限</button>
+          <button class="btn-secondary" onclick="resetRSABE()">重置</button>
+        </div>
+
+        <div id="rsabe-result" class="result-section">
+          <div class="result-title">RSABE区间界限结果</div>
+          <div id="rsabe-result-content"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const zTable = {
+      0.001: 3.09, 0.005: 2.576, 0.01: 2.326, 0.025: 1.96,
+      0.05: 1.645, 0.1: 1.282, 0.15: 1.036, 0.2: 0.842,
+      0.25: 0.674, 0.5: 0
+    };
+
+    function getZValue(p) {
+      const keys = Object.keys(zTable).map(Number).sort((a, b) => a - b);
+      for (let i = 0; i < keys.length; i++) {
+        if (Math.abs(keys[i] - p) < 0.0001) return zTable[keys[i]];
+      }
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (p > keys[i] && p < keys[i + 1]) {
+          const k = (p - keys[i]) / (keys[i + 1] - keys[i]);
+          return zTable[keys[i]] * (1 - k) + zTable[keys[i + 1]] * k;
+        }
+      }
+      return 1.645;
+    }
+
+    // 两样本均数等效检验
+    function calculateMeanEquivalence() {
+      const mu_t = parseFloat(document.getElementById('me_mu_t').value);
+      const mu_r = parseFloat(document.getElementById('me_mu_r').value);
+      const cv = parseFloat(document.getElementById('me_cv').value);
+      const delta = parseFloat(document.getElementById('me_delta').value);
+      const alpha = parseFloat(document.getElementById('me_alpha').value);
+      const power = parseFloat(document.getElementById('me_power').value);
+
+      if (isNaN(mu_t) || isNaN(mu_r) || isNaN(cv) || isNaN(delta) || isNaN(alpha) || isNaN(power)) {
+        alert('请输入有效的数值');
+        return;
+      }
+
+      if (cv <= 0 || cv >= 1) {
+        alert('变异系数CV必须在0-1之间');
+        return;
+      }
+
+      if (delta <= 0) {
+        alert('等效界限Δ必须大于0');
+        return;
+      }
+
+      const sigma = cv * Math.abs(mu_r); // 基于参比制剂的标准差
+      const z_alpha = getZValue(alpha / 2);
+      const z_beta = getZValue(1 - power);
+
+      // 等效检验的样本量公式
+      const n = Math.ceil(
+        Math.pow((z_alpha + z_beta) * sigma / delta, 2) / 2 // 除以2是因为交叉试验设计
+      );
+
+      const html = `
+        <div class="result-item">
+          <div class="label">每组所需样本量</div>
+          <div class="value">${n} 例</div>
+          <div class="detail">试验组和参比组各需要的受试者数</div>
+        </div>
+        <div class="result-item">
+          <div class="label">总样本量</div>
+          <div class="value">${n * 2} 例</div>
+          <div class="detail">交叉试验的总样本数</div>
+        </div>
+        <div class="result-item">
+          <div class="label">等效接受区间</div>
+          <div class="value">[${(mu_r * (1 - delta)).toFixed(2)}, ${(mu_r * (1 + delta)).toFixed(2)}]</div>
+          <div class="detail">试验制剂参数应在此区间内</div>
+        </div>
+        <div class="divider"></div>
+        <div class="result-item">
+          <div class="label">统计学参数</div>
+          <div class="detail">Z_α/2 = ${z_alpha.toFixed(4)}, Z_β = ${z_beta.toFixed(4)}</div>
+          <div class="detail">μ_T = ${mu_t}, μ_R = ${mu_r}, CV = ${cv}, Δ = ${delta}</div>
+          <div class="detail">α = ${alpha}, Power = ${power}</div>
+        </div>
+      `;
+
+      document.getElementById('me-result-content').innerHTML = html;
+      document.getElementById('me-result').classList.add('show');
+    }
+
+    // 两样本率等效检验
+    function calculateProportionEquivalence() {
+      const p1 = parseFloat(document.getElementById('pe_p1').value);
+      const p2 = parseFloat(document.getElementById('pe_p2').value);
+      const delta = parseFloat(document.getElementById('pe_delta').value);
+      const alpha = parseFloat(document.getElementById('pe_alpha').value);
+      const power = parseFloat(document.getElementById('pe_power').value);
+
+      if (isNaN(p1) || isNaN(p2) || isNaN(delta) || isNaN(alpha) || isNaN(power)) {
+        alert('请输入有效的数值');
+        return;
+      }
+
+      if (p1 < 0 || p1 > 1 || p2 < 0 || p2 > 1) {
+        alert('有效率必须在0-1之间');
+        return;
+      }
+
+      if (delta <= 0 || delta >= 1) {
+        alert('等效界限Δ必须在0-1之间');
+        return;
+      }
+
+      const z_alpha = getZValue(alpha / 2);
+      const z_beta = getZValue(1 - power);
+      const p_avg = (p1 + p2) / 2;
+
+      // 率等效检验的样本量公式
+      const n = Math.ceil(
+        Math.pow(z_alpha + z_beta, 2) * p_avg * (1 - p_avg) / Math.pow(delta, 2)
+      );
+
+      const html = `
+        <div class="result-item">
+          <div class="label">每组所需样本量</div>
+          <div class="value">${n} 例</div>
+          <div class="detail">试验组和参比组各需要的受试者数</div>
+        </div>
+        <div class="result-item">
+          <div class="label">总样本量</div>
+          <div class="value">${n * 2} 例</div>
+          <div class="detail">两组的总样本数</div>
+        </div>
+        <div class="result-item">
+          <div class="label">等效接受区间</div>
+          <div class="value">[${(p2 - delta).toFixed(3)}, ${(p2 + delta).toFixed(3)}]</div>
+          <div class="detail">试验组有效率应在此区间内</div>
+        </div>
+        <div class="divider"></div>
+        <div class="result-item">
+          <div class="label">统计学参数</div>
+          <div class="detail">Z_α/2 = ${z_alpha.toFixed(4)}, Z_β = ${z_beta.toFixed(4)}</div>
+          <div class="detail">P1 = ${p1}, P2 = ${p2}, Δ = ${delta}, α = ${alpha}, Power = ${power}</div>
+        </div>
+      `;
+
+      document.getElementById('pe-result-content').innerHTML = html;
+      document.getElementById('pe-result').classList.add('show');
+    }
+
+    // RSABE区间界限计算
+    function calculateRSABE() {
+      const sd = parseFloat(document.getElementById('rsabe_sd').value);
+      const mean = parseFloat(document.getElementById('rsabe_mean').value);
+
+      if (isNaN(sd) || isNaN(mean)) {
+        alert('请输入有效的数值');
+        return;
+      }
+
+      if (sd <= 0) {
+        alert('标准差SD必须大于0');
+        return;
+      }
+
+      if (mean <= 0) {
+        alert('均数Mean必须大于0');
+        return;
+      }
+
+      // 计算变异系数 CV = (SD / Mean) × 100%
+      const cv = (sd / mean) * 100 / 100; // 转换为小数形式用于计算
+
+      // 使用用户提供的RSABE区间界限计算公式
+      const lower = Math.exp(-0.223 - 2.49 * cv);
+      const upper = Math.exp(0.223 + 2.49 * cv);
+
+      const html = `
+        <div class="result-item">
+          <div class="label">RSABE接受区间下限</div>
+          <div class="value">${lower.toFixed(4)}</div>
+          <div class="detail">Lower = exp(-0.223 - 2.49σ)</div>
+        </div>
+        <div class="result-item">
+          <div class="label">RSABE接受区间上限</div>
+          <div class="value">${upper.toFixed(4)}</div>
+          <div class="detail">Upper = exp(0.223 + 2.49σ)</div>
+        </div>
+        <div class="result-item">
+          <div class="label">生物等效性接受区间</div>
+          <div class="value">[${(lower * 100).toFixed(1)}%, ${(upper * 100).toFixed(1)}%]</div>
+          <div class="detail">试验制剂/参比制剂的比值应在此区间内</div>
+        </div>
+        <div class="divider"></div>
+        <div class="result-item">
+          <div class="label">参数说明</div>
+          <div class="detail">CV: 变异系数 = (SD / Mean) × 100% = (${sd} / ${mean}) × 100% = ${(cv * 100).toFixed(1)}%</div>
+          <div class="detail">σ: 对数标准差 = ${cv.toFixed(4)} (用于RSABE计算)</div>
+        </div>
+        <div class="result-item">
+          <div class="label">RSABE计算公式</div>
+          <div class="detail">Lower = exp(-0.223 - 2.49 × σ) = exp(-0.223 - 2.49 × ${cv.toFixed(4)}) = ${lower.toFixed(4)}</div>
+          <div class="detail">Upper = exp(0.223 + 2.49 × σ) = exp(0.223 + 2.49 × ${cv.toFixed(4)}) = ${upper.toFixed(4)}</div>
+        </div>
+        <div class="result-item">
+          <div class="label">应用说明</div>
+          <div class="detail">适用于高变异性药物(CV≥30%)的生物等效性评价，σ为对数标准差</div>
+        </div>
+      `;
+
+      document.getElementById('rsabe-result-content').innerHTML = html;
+      document.getElementById('rsabe-result').classList.add('show');
+    }
+
+    // 重置函数
+    function resetMeanEquivalence() {
+      document.getElementById('me_mu_t').value = '100';
+      document.getElementById('me_mu_r').value = '100';
+      document.getElementById('me_cv').value = '0.25';
+      document.getElementById('me_delta').value = '0.2';
+      document.getElementById('me_alpha').value = '0.05';
+      document.getElementById('me_power').value = '0.8';
+      document.getElementById('me-result').classList.remove('show');
+    }
+
+    function resetProportionEquivalence() {
+      document.getElementById('pe_p1').value = '0.85';
+      document.getElementById('pe_p2').value = '0.85';
+      document.getElementById('pe_delta').value = '0.1';
+      document.getElementById('pe_alpha').value = '0.05';
+      document.getElementById('pe_power').value = '0.8';
+      document.getElementById('pe-result').classList.remove('show');
+    }
+
+    function resetRSABE() {
+      document.getElementById('rsabe_sd').value = '30';
+      document.getElementById('rsabe_mean').value = '100';
+      document.getElementById('rsabe-result').classList.remove('show');
+    }
+
+    // 标签页切换
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const tabName = e.target.dataset.tab;
+
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+        e.target.classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

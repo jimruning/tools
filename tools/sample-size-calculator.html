@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>样本量计算器 | Sample Size Calculator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-bottom: 3px solid #667eea;
+    }
+    header h1 { color: #333; font-size: 1.8em; margin: 0; }
+    header p { color: #666; font-size: 0.95em; margin-top: 5px; }
+    header .back-link {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.9em;
+    }
+    header .back-link:hover { text-decoration: underline; }
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 900px;
+      width: 100%;
+    }
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #eee;
+    }
+    .tab-button {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.3s;
+    }
+    .tab-button.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    .tab-button:hover { color: #667eea; }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 0.95em;
+    }
+    .form-group .hint {
+      font-size: 0.85em;
+      color: #888;
+      margin-top: 4px;
+    }
+    .form-group input {
+      padding: 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    button {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      flex: 1;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    .btn-secondary:hover { background: #e0e0e0; }
+    .result-section {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+      display: none;
+    }
+    .result-section.show {
+      display: block;
+      animation: slideIn 0.3s;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .result-title {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .result-item {
+      margin-bottom: 18px;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      border-left: 3px solid #667eea;
+    }
+    .result-item .label {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 0.95em;
+    }
+    .result-item .value {
+      font-size: 1.4em;
+      font-weight: 700;
+      color: #333;
+      margin-top: 4px;
+    }
+    .result-item .detail {
+      font-size: 0.9em;
+      color: #888;
+      margin-top: 6px;
+    }
+    .info-box {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: #666;
+    }
+    .info-box strong { color: #f57f17; }
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 30px 0;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+      header { padding: 15px 20px; }
+      header h1 { font-size: 1.4em; }
+      main { padding: 20px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="../index.html" class="back-link"> 返回工具列表</a>
+    <h1>单组样本量计算</h1>
+    <p>Single Group Sample Size Calculator - 临床试验设计工具</p>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="tabs">
+        <button class="tab-button active" data-tab="simon">Simon两阶段设计</button>
+        <button class="tab-button" data-tab="single-arm">单臂试验</button>
+        <button class="tab-button" data-tab="target-value">单组率（目标值法）</button>
+        <button class="tab-button" data-tab="two-arm">双臂试验</button>
+      </div>
+
+      <!-- Simon两阶段设计 -->
+      <div id="simon" class="tab-content active">
+        <div class="info-box">
+          <strong>Simon设计说明：</strong>单臂试验组的有效率通常需比历史对照组高10%及以上
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="simon_p0">无效率 (P0)</label>
+            <input type="number" id="simon_p0" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">假设有效率的下界</div>
+          </div>
+
+          <div class="form-group">
+            <label for="simon_p1">期望有效率 (P1)</label>
+            <input type="number" id="simon_p1" value="0.25" min="0" max="1" step="0.01">
+            <div class="hint">期望的有效率 (应大于P0)</div>
+          </div>
+
+          <div class="form-group">
+            <label for="simon_alpha">显著性水平 (α)</label>
+            <input type="number" id="simon_alpha" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">第一类错误概率，常用0.05</div>
+          </div>
+
+          <div class="form-group">
+            <label for="simon_beta">检验效能 (1-β)</label>
+            <input type="number" id="simon_beta" value="0.2" min="0" max="1" step="0.01">
+            <div class="hint">1减去第二类错误概率</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="calculateSimon()">计算样本量</button>
+          <button class="btn-secondary" onclick="resetSimon()">重置</button>
+        </div>
+
+        <div id="simon-result" class="result-section">
+          <div class="result-title">计算结果</div>
+          <div id="simon-result-content"></div>
+        </div>
+      </div>
+
+      <!-- 单臂试验 -->
+      <div id="single-arm" class="tab-content">
+        <div class="info-box">
+          <strong>单臂试验说明：</strong>用于评估新药/新治疗方法的疗效
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="sa_p0">历史有效率 (P0)</label>
+            <input type="number" id="sa_p0" value="0.3" min="0" max="1" step="0.01">
+            <div class="hint">参考标准或历史数据</div>
+          </div>
+
+          <div class="form-group">
+            <label for="sa_p1">期望有效率 (P1)</label>
+            <input type="number" id="sa_p1" value="0.5" min="0" max="1" step="0.01">
+            <div class="hint">期望达到的有效率</div>
+          </div>
+
+          <div class="form-group">
+            <label for="sa_alpha">显著性水平 (α)</label>
+            <input type="number" id="sa_alpha" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">单侧检验推荐使用0.05</div>
+          </div>
+
+          <div class="form-group">
+            <label for="sa_power">统计功效 (1-β)</label>
+            <input type="number" id="sa_power" value="0.8" min="0" max="1" step="0.01">
+            <div class="hint">推荐值为0.8-0.9</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="calculateSingleArm()">计算样本量</button>
+          <button class="btn-secondary" onclick="resetSingleArm()">重置</button>
+        </div>
+
+        <div id="sa-result" class="result-section">
+          <div class="result-title">计算结果</div>
+          <div id="sa-result-content"></div>
+        </div>
+      </div>
+
+      <!-- 单组率（目标值法） -->
+      <div id="target-value" class="tab-content">
+        <div class="info-box">
+          <strong>目标值法说明：</strong>基于期望的比例和允许的精度计算单组样本量
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="tv_p">期望比例 (P)</label>
+            <input type="number" id="tv_p" value="0.5" min="0" max="1" step="0.01">
+            <div class="hint">期望达到的比例或率</div>
+          </div>
+
+          <div class="form-group">
+            <label for="tv_d">半宽度 (d)</label>
+            <input type="number" id="tv_d" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">允许的精度范围</div>
+          </div>
+
+          <div class="form-group">
+            <label for="tv_alpha">显著性水平 (α)</label>
+            <input type="number" id="tv_alpha" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">置信区间水平，常用0.05</div>
+          </div>
+
+          <div class="form-group">
+            <label for="tv_power">统计功效 (1-β)</label>
+            <input type="number" id="tv_power" value="0.8" min="0" max="1" step="0.01">
+            <div class="hint">检验效能，推荐值为0.8</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="calculateTargetValue()">计算样本量</button>
+          <button class="btn-secondary" onclick="resetTargetValue()">重置</button>
+        </div>
+
+        <div id="tv-result" class="result-section">
+          <div class="result-title">计算结果</div>
+          <div id="tv-result-content"></div>
+        </div>
+      </div>
+
+      <!-- 双臂试验 -->
+      <div id="two-arm" class="tab-content">
+        <div class="info-box">
+          <strong>双臂试验说明：</strong>用于比较试验组与对照组的疗效差异
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="ta_p1">对照组有效率 (P1)</label>
+            <input type="number" id="ta_p1" value="0.4" min="0" max="1" step="0.01">
+            <div class="hint">对照组的预期有效率</div>
+          </div>
+
+          <div class="form-group">
+            <label for="ta_p2">试验组有效率 (P2)</label>
+            <input type="number" id="ta_p2" value="0.6" min="0" max="1" step="0.01">
+            <div class="hint">试验组的预期有效率</div>
+          </div>
+
+          <div class="form-group">
+            <label for="ta_alpha">显著性水平 (α)</label>
+            <input type="number" id="ta_alpha" value="0.05" min="0" max="1" step="0.01">
+            <div class="hint">双侧检验推荐使用0.05</div>
+          </div>
+
+          <div class="form-group">
+            <label for="ta_power">统计功效 (1-β)</label>
+            <input type="number" id="ta_power" value="0.8" min="0" max="1" step="0.01">
+            <div class="hint">推荐值为0.8-0.9</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="calculateTwoArm()">计算样本量</button>
+          <button class="btn-secondary" onclick="resetTwoArm()">重置</button>
+        </div>
+
+        <div id="ta-result" class="result-section">
+          <div class="result-title">计算结果</div>
+          <div id="ta-result-content"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Z值表
+    const zTable = {
+      0.001: 3.09, 0.005: 2.576, 0.01: 2.326, 0.025: 1.96,
+      0.05: 1.645, 0.1: 1.282, 0.15: 1.036, 0.2: 0.842,
+      0.25: 0.674, 0.5: 0
+    };
+
+    function getZValue(p) {
+      const keys = Object.keys(zTable).map(Number).sort((a, b) => a - b);
+
+      for (let i = 0; i < keys.length; i++) {
+        if (Math.abs(keys[i] - p) < 0.0001) return zTable[keys[i]];
+      }
+
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (p > keys[i] && p < keys[i + 1]) {
+          const k = (p - keys[i]) / (keys[i + 1] - keys[i]);
+          return zTable[keys[i]] * (1 - k) + zTable[keys[i + 1]] * k;
+        }
+      }
+      return 1.645;
+    }
+
+    // Simon两阶段设计
+    function calculateSimon() {
+      const p0 = parseFloat(document.getElementById('simon_p0').value);
+      const p1 = parseFloat(document.getElementById('simon_p1').value);
+      const alpha = parseFloat(document.getElementById('simon_alpha').value);
+      const beta = parseFloat(document.getElementById('simon_beta').value);
+
+      if (isNaN(p0) || isNaN(p1) || isNaN(alpha) || isNaN(beta)) {
+        alert('请输入有效的数值');
+        return;
+      }
+
+      if (p0 >= p1) {
+        alert('P0必须小于P1');
+        return;
+      }
+
+      const z_alpha = getZValue(alpha);
+      const z_beta = getZValue(beta);
+      const p_diff = p1 - p0;
+
+      const n_single = Math.ceil(
+        (z_alpha * Math.sqrt(2 * p0 * (1 - p0)) +
+         z_beta * Math.sqrt(p0 * (1 - p0) + p1 * (1 - p1))) ** 2 /
+        (p_diff ** 2)
+      );
+
+      const r1 = Math.ceil(0.6 * n_single);
+      const r = Math.ceil(0.9 * n_single);
+      const a1 = Math.ceil(r1 * p1);
+
+      const html = `
+        <div class="result-item">
+          <div class="label">单阶段样本量</div>
+          <div class="value">${n_single} 例</div>
+          <div class="detail">一次性试验所需的总样本数</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="result-item">
+          <div class="label">第一阶段样本量</div>
+          <div class="value">${r1} 例</div>
+          <div class="detail">初期入组的受试者数</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">第一阶段反应数下限</div>
+          <div class="value">${a1} 例</div>
+          <div class="detail">若有效患者数  ${a1} 例，继续第二阶段</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">总样本量</div>
+          <div class="value">${r} 例</div>
+          <div class="detail">两个阶段的总样本数</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">最终有效率判定标准</div>
+          <div class="value"> ${r} 例有效</div>
+          <div class="detail">总有效患者数达到此数值判定为成功</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="result-item">
+          <div class="label">统计学参数</div>
+          <div class="detail">Z_α = ${z_alpha.toFixed(4)}, Z_β = ${z_beta.toFixed(4)}</div>
+          <div class="detail">P0 = ${p0}, P1 = ${p1}, α = ${alpha}, 1-β = ${beta}</div>
+        </div>
+      `;
+
+      document.getElementById('simon-result-content').innerHTML = html;
+      document.getElementById('simon-result').classList.add('show');
+    }
+
+    // 单臂试验
+    function calculateSingleArm() {
+      const p0 = parseFloat(document.getElementById('sa_p0').value);
+      const p1 = parseFloat(document.getElementById('sa_p1').value);
+      const alpha = parseFloat(document.getElementById('sa_alpha').value);
+      const power = parseFloat(document.getElementById('sa_power').value);
+
+      if (isNaN(p0) || isNaN(p1) || isNaN(alpha) || isNaN(power)) {
+        alert('请输入有效的数值');
+        return;
+      }
+
+      if (p0 >= p1) {
+        alert('P0必须小于P1');
+        return;
+      }
+
+      const z_alpha = getZValue(alpha);
+      const z_beta = getZValue(1 - power);
+      const p_diff = p1 - p0;
+
+      const n = Math.ceil(
+        (z_alpha * Math.sqrt(p0 * (1 - p0)) +
+         z_beta * Math.sqrt(p1 * (1 - p1))) ** 2 /
+        (p_diff ** 2)
+      );
+
+      const html = `
+        <div class="result-item">
+          <div class="label">所需样本量</div>
+          <div class="value">${n} 例</div>
+          <div class="detail">每组需要入组的受试者数</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">预期有效患者数</div>
+          <div class="value">${Math.ceil(n * p1)} 例</div>
+          <div class="detail">根据期望有效率估算</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="result-item">
+          <div class="label">统计学参数</div>
+          <div class="detail">Z_α = ${z_alpha.toFixed(4)}, Z_β = ${z_beta.toFixed(4)}</div>
+          <div class="detail">P0 = ${p0}, P1 = ${p1}, α = ${alpha}, Power = ${power}</div>
+        </div>
+      `;
+
+      document.getElementById('sa-result-content').innerHTML = html;
+      document.getElementById('sa-result').classList.add('show');
+    }
+
+    // 单组率（目标值法）
+    function calculateTargetValue() {
+      const p = parseFloat(document.getElementById('tv_p').value);
+      const d = parseFloat(document.getElementById('tv_d').value);
+      const alpha = parseFloat(document.getElementById('tv_alpha').value);
+      const power = parseFloat(document.getElementById('tv_power').value);
+
+      if (isNaN(p) || isNaN(d) || isNaN(alpha) || isNaN(power)) {
+        alert('请输入有效的数值');
+        return;
+      }
+
+      if (p <= 0 || p >= 1) {
+        alert('期望比例P必须在0-1之间');
+        return;
+      }
+
+      if (d <= 0 || d >= 1) {
+        alert('半宽度d必须在0-1之间');
+        return;
+      }
+
+      const z_alpha = getZValue(alpha / 2);
+      const z_beta = getZValue(1 - power);
+
+      const n = Math.ceil(
+        (z_alpha + z_beta) ** 2 * p * (1 - p) / (d ** 2)
+      );
+
+      const expected_success = Math.ceil(n * p);
+      const ci_lower = Math.max(0, p - d);
+      const ci_upper = Math.min(1, p + d);
+
+      const html = `
+        <div class="result-item">
+          <div class="label">所需样本量</div>
+          <div class="value">${n} 例</div>
+          <div class="detail">基于期望比例和精度的单组样本量</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">预期成功数</div>
+          <div class="value">${expected_success} 例</div>
+          <div class="detail">根据期望比例估算的成功案例数</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">置信区间</div>
+          <div class="value">${(ci_lower * 100).toFixed(1)}% - ${(ci_upper * 100).toFixed(1)}%</div>
+          <div class="detail">期望比例的允许波动范围</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="result-item">
+          <div class="label">统计学参数</div>
+          <div class="detail">Z_α/2 = ${z_alpha.toFixed(4)}, Z_β = ${z_beta.toFixed(4)}</div>
+          <div class="detail">P = ${p}, d = ${d}, α = ${alpha}, Power = ${power}</div>
+        </div>
+      `;
+
+      document.getElementById('tv-result-content').innerHTML = html;
+      document.getElementById('tv-result').classList.add('show');
+    }
+
+    // 双臂试验
+    function calculateTwoArm() {
+      const p1 = parseFloat(document.getElementById('ta_p1').value);
+      const p2 = parseFloat(document.getElementById('ta_p2').value);
+      const alpha = parseFloat(document.getElementById('ta_alpha').value);
+      const power = parseFloat(document.getElementById('ta_power').value);
+
+      if (isNaN(p1) || isNaN(p2) || isNaN(alpha) || isNaN(power)) {
+        alert('请输入有效的数值');
+        return;
+      }
+
+      if (p1 === p2) {
+        alert('两组有效率不能相等');
+        return;
+      }
+
+      const z_alpha = getZValue(alpha / 2);
+      const z_beta = getZValue(1 - power);
+      const p_avg = (p1 + p2) / 2;
+      const p_diff = Math.abs(p2 - p1);
+
+      const n = Math.ceil(
+        (z_alpha * Math.sqrt(2 * p_avg * (1 - p_avg)) +
+         z_beta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2))) ** 2 /
+        (p_diff ** 2)
+      );
+
+      const html = `
+        <div class="result-item">
+          <div class="label">每组所需样本量</div>
+          <div class="value">${n} 例</div>
+          <div class="detail">对照组和试验组各需要此数量的受试者</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">总样本量</div>
+          <div class="value">${n * 2} 例</div>
+          <div class="detail">两组合计的总样本数</div>
+        </div>
+
+        <div class="result-item">
+          <div class="label">预期有效患者数</div>
+          <div class="detail">
+            对照组：${Math.ceil(n * p1)} 例 &nbsp; | &nbsp;
+            试验组：${Math.ceil(n * p2)} 例
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="result-item">
+          <div class="label">统计学参数</div>
+          <div class="detail">Z_α/2 = ${z_alpha.toFixed(4)}, Z_β = ${z_beta.toFixed(4)}</div>
+          <div class="detail">P1 = ${p1}, P2 = ${p2}, α = ${alpha}, Power = ${power}</div>
+        </div>
+      `;
+
+      document.getElementById('ta-result-content').innerHTML = html;
+      document.getElementById('ta-result').classList.add('show');
+    }
+
+    // 重置函数
+    function resetSimon() {
+      document.getElementById('simon_p0').value = '0.05';
+      document.getElementById('simon_p1').value = '0.25';
+      document.getElementById('simon_alpha').value = '0.05';
+      document.getElementById('simon_beta').value = '0.2';
+      document.getElementById('simon-result').classList.remove('show');
+    }
+
+    function resetSingleArm() {
+      document.getElementById('sa_p0').value = '0.3';
+      document.getElementById('sa_p1').value = '0.5';
+      document.getElementById('sa_alpha').value = '0.05';
+      document.getElementById('sa_power').value = '0.8';
+      document.getElementById('sa-result').classList.remove('show');
+    }
+
+    function resetTargetValue() {
+      document.getElementById('tv_p').value = '0.5';
+      document.getElementById('tv_d').value = '0.05';
+      document.getElementById('tv_alpha').value = '0.05';
+      document.getElementById('tv_power').value = '0.8';
+      document.getElementById('tv-result').classList.remove('show');
+    }
+
+    function resetTwoArm() {
+      document.getElementById('ta_p1').value = '0.4';
+      document.getElementById('ta_p2').value = '0.6';
+      document.getElementById('ta_alpha').value = '0.05';
+      document.getElementById('ta_power').value = '0.8';
+      document.getElementById('ta-result').classList.remove('show');
+    }
+
+    // 标签页切换
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const tabName = e.target.dataset.tab;
+
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+        e.target.classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

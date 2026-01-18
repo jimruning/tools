@@ -205,5 +205,41 @@
             "开发"
         ],
         "url": "tools/json-formatter.html"
+    },
+    {
+        "id": 17,
+        "title": "单组样本量计算",
+        "description": "单组样本量计算工具，支持单臂试验、Simon两阶段设计和目标值法等统计学计算。",
+        "url": "tools/sample-size-calculator.html",
+        "category": "medical",
+        "icon": "fas fa-calculator",
+        "tags": ["单组试验", "样本量", "统计学", "目标值法"]
+    },
+    {
+        "id": 21,
+        "title": "两组样本量计算",
+        "description": "两组样本量计算工具，支持双臂试验等统计学计算。",
+        "url": "tools/two-group-sample-calculator.html",
+        "category": "medical",
+        "icon": "fas fa-chart-bar",
+        "tags": ["两组试验", "样本量", "统计学", "双臂试验"]
+    },
+    {
+        "id": 22,
+        "title": "两组样本均数计算",
+        "description": "两组样本均数计算工具，支持差异检验、非劣检验和等效检验。",
+        "url": "tools/two-group-mean-calculator.html",
+        "category": "medical",
+        "icon": "fas fa-chart-line",
+        "tags": ["两组均数", "样本量", "统计学", "均数比较"]
+    },
+    {
+        "id": 23,
+        "title": "生物等效性样本量计算",
+        "description": "生物等效性计算工具，支持两样本均数等效检验、两样本率等效检验和RSABE区间界限计算。",
+        "url": "tools/bioequivalence-calculator.html",
+        "category": "medical",
+        "icon": "fas fa-pills",
+        "tags": ["生物等效性", "BE", "RSABE", "样本量"]
     }
 ]
