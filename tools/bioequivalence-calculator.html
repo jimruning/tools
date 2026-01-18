@@ -191,20 +191,87 @@
       background: #eee;
       margin: 30px 0;
     }
+    /* 语言切换样式 */
+    .lang-en {
+      display: none;
+      color: #666;
+      font-size: 0.85em;
+      margin-left: 8px;
+    }
+
+    /* 当语言为英文时显示英文文本 */
+    body[data-lang="en"] .lang-en {
+      display: inline;
+    }
+
+    /* 当语言为中文时隐藏英文文本 */
+    body[data-lang="zh"] .lang-en {
+      display: none;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .lang-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      color: #666;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .lang-btn:hover {
+      background-color: #e0e0e0;
+      border-color: #667eea;
+      color: #667eea;
+    }
+
+    .lang-btn .fa-language {
+      font-size: 14px;
+    }
+
+    .lang-btn #tool-lang-text {
+      font-weight: 600;
+      min-width: 16px;
+      text-align: center;
+    }
+
     @media (max-width: 768px) {
       .container { padding: 20px; }
       .form-grid { grid-template-columns: 1fr; }
       header { padding: 15px 20px; }
       header h1 { font-size: 1.4em; }
       main { padding: 20px 10px; }
+      .lang-en { display: block !important; margin-left: 0; margin-top: 4px; }
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <a href="../index.html" class="back-link"> 返回工具列表</a>
-    <h1>生物等效性样本量计算</h1>
-    <p>Bioequivalence Sample Size Calculator - 临床试验设计工具</p>
+    <a href="../index.html" class="back-link" id="back-link"> 返回工具列表</a>
+    <div class="header-content">
+      <h1 id="page-title">生物等效性样本量计算</h1>
+      <p id="page-subtitle">Bioequivalence Sample Size Calculator - 临床试验设计工具</p>
+      <button id="tool-lang-toggle" class="lang-btn" title="切换语言 / Switch Language">
+        <i class="fas fa-language"></i>
+        <span id="tool-lang-text">中</span>
+      </button>
+    </div>
   </header>
 
   <main>
