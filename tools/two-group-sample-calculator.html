@@ -193,20 +193,87 @@
       background: #eee;
       margin: 30px 0;
     }
+    /* 语言切换样式 */
+    .lang-en {
+      display: none;
+      color: #666;
+      font-size: 0.85em;
+      margin-left: 8px;
+    }
+
+    /* 当语言为英文时显示英文文本 */
+    body[data-lang="en"] .lang-en {
+      display: inline;
+    }
+
+    /* 当语言为中文时隐藏英文文本 */
+    body[data-lang="zh"] .lang-en {
+      display: none;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .lang-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      color: #666;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .lang-btn:hover {
+      background-color: #e0e0e0;
+      border-color: #667eea;
+      color: #667eea;
+    }
+
+    .lang-btn .fa-language {
+      font-size: 14px;
+    }
+
+    .lang-btn #tool-lang-text {
+      font-weight: 600;
+      min-width: 16px;
+      text-align: center;
+    }
+
     @media (max-width: 768px) {
       .container { padding: 20px; }
       .form-grid { grid-template-columns: 1fr; }
       header { padding: 15px 20px; }
       header h1 { font-size: 1.4em; }
       main { padding: 20px 10px; }
+      .lang-en { display: block !important; margin-left: 0; margin-top: 4px; }
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <a href="../index.html" class="back-link"> 返回工具列表</a>
-    <h1>两组样本量计算</h1>
-    <p>Two Group Sample Size Calculator - 临床试验设计工具</p>
+    <a href="../index.html" class="back-link" id="back-link"> 返回工具列表</a>
+    <div class="header-content">
+      <h1 id="page-title">两组样本量计算</h1>
+      <p id="page-subtitle">Two Group Sample Size Calculator - 临床试验设计工具</p>
+      <button id="tool-lang-toggle" class="lang-btn" title="切换语言 / Switch Language">
+        <i class="fas fa-language"></i>
+        <span id="tool-lang-text">中</span>
+      </button>
+    </div>
   </header>
 
   <main>
@@ -225,27 +292,27 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="diff_p1">对照组有效率 (P1)</label>
+            <label for="diff_p1">对照组有效率 (P1) <span class="lang-en">Control Group Efficacy Rate (P1)</span></label>
             <input type="number" id="diff_p1" value="0.4" min="0" max="1" step="0.01">
-            <div class="hint">对照组的预期有效率</div>
+            <div class="hint">对照组的预期有效率 <span class="lang-en">Expected efficacy rate of control group</span></div>
           </div>
 
           <div class="form-group">
-            <label for="diff_p2">试验组有效率 (P2)</label>
+            <label for="diff_p2">试验组有效率 (P2) <span class="lang-en">Treatment Group Efficacy Rate (P2)</span></label>
             <input type="number" id="diff_p2" value="0.6" min="0" max="1" step="0.01">
-            <div class="hint">试验组的预期有效率</div>
+            <div class="hint">试验组的预期有效率 <span class="lang-en">Expected efficacy rate of treatment group</span></div>
           </div>
 
           <div class="form-group">
-            <label for="diff_alpha">显著性水平 (α)</label>
+            <label for="diff_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="diff_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">双侧检验推荐使用0.05</div>
+            <div class="hint">双侧检验推荐使用0.05 <span class="lang-en">Two-sided test recommended 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="diff_power">统计功效 (1-β)</label>
+            <label for="diff_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="diff_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">推荐值为0.8-0.9</div>
+            <div class="hint">推荐值为0.8-0.9 <span class="lang-en">Recommended values 0.8-0.9</span></div>
           </div>
         </div>
 
@@ -268,27 +335,27 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="ni_p1">对照组有效率 (P1)</label>
+            <label for="ni_p1">对照组有效率 (P1) <span class="lang-en">Control Group Efficacy Rate (P1)</span></label>
             <input type="number" id="ni_p1" value="0.5" min="0" max="1" step="0.01">
-            <div class="hint">对照组的预期有效率</div>
+            <div class="hint">对照组的预期有效率 <span class="lang-en">Expected efficacy rate of control group</span></div>
           </div>
 
           <div class="form-group">
-            <label for="ni_delta">非劣界值 (Δ)</label>
+            <label for="ni_delta">非劣界值 (Δ) <span class="lang-en">Non-Inferiority Margin (Δ)</span></label>
             <input type="number" id="ni_delta" value="0.1" min="0" max="1" step="0.01">
-            <div class="hint">试验组允许的最小差异</div>
+            <div class="hint">试验组允许的最小差异 <span class="lang-en">Minimum difference allowed for treatment group</span></div>
           </div>
 
           <div class="form-group">
-            <label for="ni_alpha">显著性水平 (α)</label>
+            <label for="ni_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="ni_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">单侧检验推荐使用0.025</div>
+            <div class="hint">单侧检验推荐使用0.025 <span class="lang-en">One-sided test recommended 0.025</span></div>
           </div>
 
           <div class="form-group">
-            <label for="ni_power">统计功效 (1-β)</label>
+            <label for="ni_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="ni_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">推荐值为0.8-0.9</div>
+            <div class="hint">推荐值为0.8-0.9 <span class="lang-en">Recommended values 0.8-0.9</span></div>
           </div>
         </div>
 
@@ -311,27 +378,27 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="eq_p1">对照组有效率 (P1)</label>
+            <label for="eq_p1">对照组有效率 (P1) <span class="lang-en">Control Group Efficacy Rate (P1)</span></label>
             <input type="number" id="eq_p1" value="0.5" min="0" max="1" step="0.01">
-            <div class="hint">对照组的预期有效率</div>
+            <div class="hint">对照组的预期有效率 <span class="lang-en">Expected efficacy rate of control group</span></div>
           </div>
 
           <div class="form-group">
-            <label for="eq_delta">等效界值 (Δ)</label>
+            <label for="eq_delta">等效界值 (Δ) <span class="lang-en">Equivalence Margin (Δ)</span></label>
             <input type="number" id="eq_delta" value="0.1" min="0" max="1" step="0.01">
-            <div class="hint">允许的最大等效差异</div>
+            <div class="hint">允许的最大等效差异 <span class="lang-en">Maximum allowed equivalence difference</span></div>
           </div>
 
           <div class="form-group">
-            <label for="eq_alpha">显著性水平 (α)</label>
+            <label for="eq_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="eq_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">双侧检验推荐使用0.05</div>
+            <div class="hint">双侧检验推荐使用0.05 <span class="lang-en">Two-sided test recommended 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="eq_power">统计功效 (1-β)</label>
+            <label for="eq_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="eq_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">推荐值为0.8-0.9</div>
+            <div class="hint">推荐值为0.8-0.9 <span class="lang-en">Recommended values 0.8-0.9</span></div>
           </div>
         </div>
 
@@ -568,6 +635,119 @@
       document.getElementById('eq_power').value = '0.8';
       document.getElementById('eq-result').classList.remove('show');
     }
+
+    // 工具页面语言切换功能
+    let toolCurrentLanguage = 'zh';
+
+    // 工具页面翻译数据
+    const toolTranslations = {
+      zh: {
+        backLink: "返回工具列表",
+        pageTitle: "两组样本量计算",
+        pageSubtitle: "Two Group Sample Size Calculator - 临床试验设计工具",
+        differenceTab: "差异检验",
+        nonInferiorityTab: "非劣检验",
+        equivalenceTab: "等效检验",
+        calculateBtn: "计算样本量",
+        resetBtn: "重置",
+        resultTitle: "差异检验结果",
+        niResultTitle: "非劣检验结果",
+        eqResultTitle: "等效检验结果",
+        enterValidNumber: "请输入有效的数值",
+        ratesCannotBeEqual: "两组有效率不能相等",
+        niMarginMustBePositive: "非劣界值Δ必须大于0",
+        treatmentRateCannotBeNegative: "根据非劣界值，试验组预期有效率不能为负数",
+        eqMarginMustBePositive: "等效界值Δ必须大于0"
+      },
+      en: {
+        backLink: "Back to Tools",
+        pageTitle: "Two Group Sample Size Calculator",
+        pageSubtitle: "Sample Size Calculator - Clinical Trial Design Tool",
+        differenceTab: "Difference Test",
+        nonInferiorityTab: "Non-Inferiority Test",
+        equivalenceTab: "Equivalence Test",
+        calculateBtn: "Calculate Sample Size",
+        resetBtn: "Reset",
+        resultTitle: "Difference Test Results",
+        niResultTitle: "Non-Inferiority Test Results",
+        eqResultTitle: "Equivalence Test Results",
+        enterValidNumber: "Please enter a valid number",
+        ratesCannotBeEqual: "The two group rates cannot be equal",
+        niMarginMustBePositive: "Non-inferiority margin Δ must be greater than 0",
+        treatmentRateCannotBeNegative: "Based on non-inferiority margin, treatment group expected efficacy rate cannot be negative",
+        eqMarginMustBePositive: "Equivalence margin Δ must be greater than 0"
+      }
+    };
+
+    function toolT(key) {
+      return toolTranslations[toolCurrentLanguage][key] || key;
+    }
+
+    function toggleToolLanguage() {
+      toolCurrentLanguage = toolCurrentLanguage === 'zh' ? 'en' : 'zh';
+      updateToolLanguage();
+      localStorage.setItem('tool-language', toolCurrentLanguage);
+    }
+
+    function updateToolLanguage() {
+      // 设置body的data-lang属性来控制CSS显示
+      document.body.setAttribute('data-lang', toolCurrentLanguage);
+
+      // 更新语言按钮文本
+      const langText = document.getElementById('tool-lang-text');
+      if (langText) {
+        langText.textContent = toolCurrentLanguage === 'zh' ? '中' : 'EN';
+      }
+
+      // 更新标题和副标题
+      const pageTitle = document.getElementById('page-title');
+      if (pageTitle) pageTitle.textContent = toolT('pageTitle');
+
+      const pageSubtitle = document.getElementById('page-subtitle');
+      if (pageSubtitle) pageSubtitle.textContent = toolT('pageSubtitle');
+
+      // 更新返回链接
+      const backLink = document.getElementById('back-link');
+      if (backLink) backLink.textContent = toolT('backLink');
+
+      // 更新标签页
+      const tabs = ['difference', 'non-inferiority', 'equivalence'];
+      tabs.forEach(tab => {
+        const tabBtn = document.querySelector(`[data-tab="${tab}"]`);
+        if (tabBtn) {
+          const tabKey = tab.replace('-', '') + 'Tab';
+          tabBtn.textContent = toolT(tabKey);
+        }
+      });
+
+      // 更新结果标题
+      const resultTitles = document.querySelectorAll('.result-title');
+      resultTitles.forEach(title => {
+        if (title.textContent.includes('差异')) {
+          title.textContent = toolT('resultTitle');
+        } else if (title.textContent.includes('非劣')) {
+          title.textContent = toolT('niResultTitle');
+        } else if (title.textContent.includes('等效')) {
+          title.textContent = toolT('eqResultTitle');
+        }
+      });
+
+      // 更新页面语言属性
+      document.documentElement.lang = toolCurrentLanguage === 'zh' ? 'zh-CN' : 'en';
+    }
+
+    // 初始化工具页面语言
+    function initToolLanguage() {
+      const savedLang = localStorage.getItem('tool-language') || 'zh';
+      toolCurrentLanguage = savedLang;
+      updateToolLanguage();
+    }
+
+    // 语言切换按钮事件
+    document.getElementById('tool-lang-toggle').addEventListener('click', toggleToolLanguage);
+
+    // 页面加载时初始化语言
+    document.addEventListener('DOMContentLoaded', initToolLanguage);
 
     // 标签页切换
     document.querySelectorAll('.tab-button').forEach(button => {
