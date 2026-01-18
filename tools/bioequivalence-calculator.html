@@ -290,39 +290,39 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="me_mu_t">试验组均数 (μ_T)</label>
+            <label for="me_mu_t">试验组均数 (μ_T) <span class="lang-en">Test Group Mean (μ_T)</span></label>
             <input type="number" id="me_mu_t" value="100" step="0.1">
-            <div class="hint">试验制剂的平均药代参数</div>
+            <div class="hint">试验制剂的平均药代参数 <span class="lang-en">Average pharmacokinetic parameter of test formulation</span></div>
           </div>
 
           <div class="form-group">
-            <label for="me_mu_r">参比组均数 (μ_R)</label>
+            <label for="me_mu_r">参比组均数 (μ_R) <span class="lang-en">Reference Group Mean (μ_R)</span></label>
             <input type="number" id="me_mu_r" value="100" step="0.1">
-            <div class="hint">参比制剂的平均药代参数</div>
+            <div class="hint">参比制剂的平均药代参数 <span class="lang-en">Average pharmacokinetic parameter of reference formulation</span></div>
           </div>
 
           <div class="form-group">
-            <label for="me_cv">变异系数 (CV)</label>
+            <label for="me_cv">变异系数 (CV) <span class="lang-en">Coefficient of Variation (CV)</span></label>
             <input type="number" id="me_cv" value="0.25" min="0" max="1" step="0.01">
-            <div class="hint">组内的变异系数，通常为0.2-0.4</div>
+            <div class="hint">组内的变异系数，通常为0.2-0.4 <span class="lang-en">Within-group coefficient of variation, typically 0.2-0.4</span></div>
           </div>
 
           <div class="form-group">
-            <label for="me_delta">等效界限 (Δ)</label>
+            <label for="me_delta">等效界限 (Δ) <span class="lang-en">Equivalence Limit (Δ)</span></label>
             <input type="number" id="me_delta" value="0.2" min="0" step="0.01">
-            <div class="hint">等效接受区间，通常为0.8-1.25的ln值范围</div>
+            <div class="hint">等效接受区间，通常为0.8-1.25的ln值范围 <span class="lang-en">Equivalence acceptance interval, typically ln(0.8)-ln(1.25) range</span></div>
           </div>
 
           <div class="form-group">
-            <label for="me_alpha">显著性水平 (α)</label>
+            <label for="me_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="me_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">双侧检验，常用0.05</div>
+            <div class="hint">双侧检验，常用0.05 <span class="lang-en">Two-sided test, commonly 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="me_power">统计功效 (1-β)</label>
+            <label for="me_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="me_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">推荐值为0.8-0.9</div>
+            <div class="hint">推荐值为0.8-0.9 <span class="lang-en">Recommended values 0.8-0.9</span></div>
           </div>
         </div>
 
@@ -345,33 +345,33 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="pe_p1">试验组有效率 (P1)</label>
+            <label for="pe_p1">试验组有效率 (P1) <span class="lang-en">Test Group Efficacy Rate (P1)</span></label>
             <input type="number" id="pe_p1" value="0.85" min="0" max="1" step="0.01">
-            <div class="hint">试验制剂的有效率</div>
+            <div class="hint">试验制剂的有效率 <span class="lang-en">Efficacy rate of test formulation</span></div>
           </div>
 
           <div class="form-group">
-            <label for="pe_p2">参比组有效率 (P2)</label>
+            <label for="pe_p2">参比组有效率 (P2) <span class="lang-en">Reference Group Efficacy Rate (P2)</span></label>
             <input type="number" id="pe_p2" value="0.85" min="0" max="1" step="0.01">
-            <div class="hint">参比制剂的有效率</div>
+            <div class="hint">参比制剂的有效率 <span class="lang-en">Efficacy rate of reference formulation</span></div>
           </div>
 
           <div class="form-group">
-            <label for="pe_delta">等效界限 (Δ)</label>
+            <label for="pe_delta">等效界限 (Δ) <span class="lang-en">Equivalence Limit (Δ)</span></label>
             <input type="number" id="pe_delta" value="0.1" min="0" max="1" step="0.01">
-            <div class="hint">等效接受区间的半宽度</div>
+            <div class="hint">等效接受区间的半宽度 <span class="lang-en">Half-width of equivalence acceptance interval</span></div>
           </div>
 
           <div class="form-group">
-            <label for="pe_alpha">显著性水平 (α)</label>
+            <label for="pe_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="pe_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">双侧检验，常用0.05</div>
+            <div class="hint">双侧检验，常用0.05 <span class="lang-en">Two-sided test, commonly 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="pe_power">统计功效 (1-β)</label>
+            <label for="pe_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="pe_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">推荐值为0.8-0.9</div>
+            <div class="hint">推荐值为0.8-0.9 <span class="lang-en">Recommended values 0.8-0.9</span></div>
           </div>
         </div>
 
@@ -394,15 +394,15 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="rsabe_sd">标准差 (SD)</label>
+            <label for="rsabe_sd">标准差 (SD) <span class="lang-en">Standard Deviation (SD)</span></label>
             <input type="number" id="rsabe_sd" value="30" min="0" step="0.1">
-            <div class="hint">参比制剂的标准差，用于计算CV</div>
+            <div class="hint">参比制剂的标准差，用于计算CV <span class="lang-en">Standard deviation of reference formulation, used to calculate CV</span></div>
           </div>
 
           <div class="form-group">
-            <label for="rsabe_mean">均数 (Mean)</label>
+            <label for="rsabe_mean">均数 (Mean) <span class="lang-en">Mean (Mean)</span></label>
             <input type="number" id="rsabe_mean" value="100" min="0" step="0.1">
-            <div class="hint">参比制剂的平均值，用于计算CV</div>
+            <div class="hint">参比制剂的平均值，用于计算CV <span class="lang-en">Average value of reference formulation, used to calculate CV</span></div>
           </div>
         </div>
 
@@ -651,6 +651,135 @@
       document.getElementById('rsabe_mean').value = '100';
       document.getElementById('rsabe-result').classList.remove('show');
     }
+
+    // 工具页面语言切换功能
+    let toolCurrentLanguage = 'zh';
+
+    // 工具页面翻译数据
+    const toolTranslations = {
+      zh: {
+        backLink: "返回工具列表",
+        pageTitle: "生物等效性样本量计算",
+        pageSubtitle: "Bioequivalence Sample Size Calculator - 临床试验设计工具",
+        meanEquivalenceTab: "两样本均数等效检验",
+        proportionEquivalenceTab: "两样本率等效检验",
+        rsabeTab: "RSABE",
+        calculateBtn: "计算样本量",
+        resetBtn: "重置",
+        calculateLimitsBtn: "计算区间界限",
+        meResultTitle: "两样本均数等效检验结果",
+        peResultTitle: "两样本率等效检验结果",
+        rsabeResultTitle: "RSABE区间界限结果",
+        enterValidNumber: "请输入有效的数值",
+        cvMustBetween0And1: "变异系数CV必须在0-1之间",
+        equivalenceLimitMustBePositive: "等效界限Δ必须大于0",
+        efficacyRateMustBetween0And1: "有效率必须在0-1之间",
+        equivalenceLimitMustBetween0And1: "等效界限Δ必须在0-1之间",
+        sdMustBePositive: "标准差SD必须大于0",
+        meanMustBePositive: "均数Mean必须大于0"
+      },
+      en: {
+        backLink: "Back to Tools",
+        pageTitle: "Bioequivalence Sample Size Calculator",
+        pageSubtitle: "Sample Size Calculator - Clinical Trial Design Tool",
+        meanEquivalenceTab: "Two-Sample Mean Equivalence Test",
+        proportionEquivalenceTab: "Two-Sample Proportion Equivalence Test",
+        rsabeTab: "RSABE",
+        calculateBtn: "Calculate Sample Size",
+        resetBtn: "Reset",
+        calculateLimitsBtn: "Calculate Interval Limits",
+        meResultTitle: "Two-Sample Mean Equivalence Test Results",
+        peResultTitle: "Two-Sample Proportion Equivalence Test Results",
+        rsabeResultTitle: "RSABE Interval Limits Results",
+        enterValidNumber: "Please enter a valid number",
+        cvMustBetween0And1: "Coefficient of variation CV must be between 0 and 1",
+        equivalenceLimitMustBePositive: "Equivalence limit Δ must be greater than 0",
+        efficacyRateMustBetween0And1: "Efficacy rate must be between 0 and 1",
+        equivalenceLimitMustBetween0And1: "Equivalence limit Δ must be between 0 and 1",
+        sdMustBePositive: "Standard deviation SD must be greater than 0",
+        meanMustBePositive: "Mean must be greater than 0"
+      }
+    };
+
+    function toolT(key) {
+      return toolTranslations[toolCurrentLanguage][key] || key;
+    }
+
+    function toggleToolLanguage() {
+      toolCurrentLanguage = toolCurrentLanguage === 'zh' ? 'en' : 'zh';
+      updateToolLanguage();
+      localStorage.setItem('tool-language', toolCurrentLanguage);
+    }
+
+    function updateToolLanguage() {
+      // 设置body的data-lang属性来控制CSS显示
+      document.body.setAttribute('data-lang', toolCurrentLanguage);
+
+      // 更新语言按钮文本
+      const langText = document.getElementById('tool-lang-text');
+      if (langText) {
+        langText.textContent = toolCurrentLanguage === 'zh' ? '中' : 'EN';
+      }
+
+      // 更新标题和副标题
+      const pageTitle = document.getElementById('page-title');
+      if (pageTitle) pageTitle.textContent = toolT('pageTitle');
+
+      const pageSubtitle = document.getElementById('page-subtitle');
+      if (pageSubtitle) pageSubtitle.textContent = toolT('pageSubtitle');
+
+      // 更新返回链接
+      const backLink = document.getElementById('back-link');
+      if (backLink) backLink.textContent = toolT('backLink');
+
+      // 更新标签页
+      const tabs = ['mean-equivalence', 'proportion-equivalence', 'rsabe'];
+      tabs.forEach(tab => {
+        const tabBtn = document.querySelector(`[data-tab="${tab}"]`);
+        if (tabBtn) {
+          const tabKey = tab.replace('-', '') + 'Tab';
+          tabBtn.textContent = toolT(tabKey);
+        }
+      });
+
+      // 更新按钮文本
+      const calculateBtn = document.querySelector('.btn-primary');
+      if (calculateBtn) {
+        if (calculateBtn.textContent.includes('计算样本量')) {
+          calculateBtn.textContent = toolT('calculateBtn');
+        } else if (calculateBtn.textContent.includes('计算区间界限')) {
+          calculateBtn.textContent = toolT('calculateLimitsBtn');
+        }
+      }
+
+      // 更新结果标题
+      const resultTitles = document.querySelectorAll('.result-title');
+      resultTitles.forEach(title => {
+        if (title.textContent.includes('两样本均数')) {
+          title.textContent = toolT('meResultTitle');
+        } else if (title.textContent.includes('两样本率')) {
+          title.textContent = toolT('peResultTitle');
+        } else if (title.textContent.includes('RSABE')) {
+          title.textContent = toolT('rsabeResultTitle');
+        }
+      });
+
+      // 更新页面语言属性
+      document.documentElement.lang = toolCurrentLanguage === 'zh' ? 'zh-CN' : 'en';
+    }
+
+    // 初始化工具页面语言
+    function initToolLanguage() {
+      const savedLang = localStorage.getItem('tool-language') || 'zh';
+      toolCurrentLanguage = savedLang;
+      updateToolLanguage();
+    }
+
+    // 语言切换按钮事件
+    document.getElementById('tool-lang-toggle').addEventListener('click', toggleToolLanguage);
+
+    // 页面加载时初始化语言
+    document.addEventListener('DOMContentLoaded', initToolLanguage);
 
     // 标签页切换
     document.querySelectorAll('.tab-button').forEach(button => {
