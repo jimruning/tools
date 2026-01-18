@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-tags">
                     ${tool.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                 </div>
-                <button class="card-action" data-url="${tool.url || ''}">使用工具</button>
+                <button class="card-action" data-url="${tool.url || ''}">${t('useTool')}</button>
             `;
             toolGrid.appendChild(card);
         });
@@ -106,6 +106,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 事件监听 ---
     function setupEventListeners() {
+        // 语言切换按钮事件监听
+        const langToggle = document.getElementById('lang-toggle');
+        if (langToggle) {
+            langToggle.addEventListener('click', toggleLanguage);
+        }
+
         // 搜索框事件监听
         if (searchInput) {
             searchInput.addEventListener('input', handleFiltering);
@@ -174,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 初始化 ---
     function initializeApp() {
+        initLanguage(); // 初始化语言设置
         renderToolCards(allTools);
         updateCategoryCounts();
         setupEventListeners();
