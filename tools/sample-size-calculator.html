@@ -30,6 +30,50 @@
       font-size: 0.9em;
     }
     header .back-link:hover { text-decoration: underline; }
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .lang-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      color: #666;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .lang-btn:hover {
+      background-color: #e0e0e0;
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .lang-btn .fa-language {
+      font-size: 14px;
+    }
+    .lang-btn #tool-lang-text {
+      font-weight: 600;
+      min-width: 16px;
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .container { padding: 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+      header { padding: 15px 20px; }
+      header h1 { font-size: 1.4em; }
+      main { padding: 20px 10px; }
+    }
     main {
       flex: 1;
       padding: 40px 20px;
@@ -202,9 +246,15 @@
 </head>
 <body>
   <header>
-    <a href="../index.html" class="back-link"> 返回工具列表</a>
-    <h1>单组样本量计算</h1>
-    <p>Single Group Sample Size Calculator - 临床试验设计工具</p>
+    <a href="../index.html" class="back-link" id="back-link"> 返回工具列表</a>
+    <div class="header-content">
+      <h1 id="page-title">单组样本量计算</h1>
+      <p id="page-subtitle">Single Group Sample Size Calculator - 临床试验设计工具</p>
+      <button id="tool-lang-toggle" class="lang-btn" title="切换语言 / Switch Language">
+        <i class="fas fa-language"></i>
+        <span id="tool-lang-text">中</span>
+      </button>
+    </div>
   </header>
 
   <main>
@@ -703,6 +753,108 @@
       document.getElementById('ta_power').value = '0.8';
       document.getElementById('ta-result').classList.remove('show');
     }
+
+    // 工具页面语言切换功能
+    let toolCurrentLanguage = 'zh';
+
+    // 工具页面翻译数据
+    const toolTranslations = {
+      zh: {
+        backLink: "返回工具列表",
+        pageTitle: "单组样本量计算",
+        pageSubtitle: "Single Group Sample Size Calculator - 临床试验设计工具",
+        simonTab: "Simon两阶段设计",
+        singleArmTab: "单臂试验",
+        targetValueTab: "单组率（目标值法）",
+        twoArmTab: "双臂试验",
+        calculateBtn: "计算样本量",
+        resetBtn: "重置",
+        resultTitle: "计算结果",
+        enterValidNumber: "请输入有效的数值",
+        p0MustLessThanP1: "P0必须小于P1",
+        pMustBetween0And1: "期望比例P必须在0-1之间",
+        dMustBetween0And1: "半宽度d必须在0-1之间",
+        ratesCannotBeEqual: "两组有效率不能相等"
+      },
+      en: {
+        backLink: "Back to Tools",
+        pageTitle: "Single Group Sample Size Calculator",
+        pageSubtitle: "Sample Size Calculator - Clinical Trial Design Tool",
+        simonTab: "Simon Two-Stage Design",
+        singleArmTab: "Single Arm Trial",
+        targetValueTab: "Single Proportion (Target Value Method)",
+        twoArmTab: "Two Arm Trial",
+        calculateBtn: "Calculate Sample Size",
+        resetBtn: "Reset",
+        resultTitle: "Calculation Results",
+        enterValidNumber: "Please enter a valid number",
+        p0MustLessThanP1: "P0 must be less than P1",
+        pMustBetween0And1: "Expected proportion P must be between 0 and 1",
+        dMustBetween0And1: "Half-width d must be between 0 and 1",
+        ratesCannotBeEqual: "The two group rates cannot be equal"
+      }
+    };
+
+    function toolT(key) {
+      return toolTranslations[toolCurrentLanguage][key] || key;
+    }
+
+    function toggleToolLanguage() {
+      toolCurrentLanguage = toolCurrentLanguage === 'zh' ? 'en' : 'zh';
+      updateToolLanguage();
+      localStorage.setItem('tool-language', toolCurrentLanguage);
+    }
+
+    function updateToolLanguage() {
+      // 更新语言按钮文本
+      const langText = document.getElementById('tool-lang-text');
+      if (langText) {
+        langText.textContent = toolCurrentLanguage === 'zh' ? '中' : 'EN';
+      }
+
+      // 更新标题和副标题
+      const pageTitle = document.getElementById('page-title');
+      if (pageTitle) pageTitle.textContent = toolT('pageTitle');
+
+      const pageSubtitle = document.getElementById('page-subtitle');
+      if (pageSubtitle) pageSubtitle.textContent = toolT('pageSubtitle');
+
+      // 更新返回链接
+      const backLink = document.getElementById('back-link');
+      if (backLink) backLink.textContent = toolT('backLink');
+
+      // 更新标签页
+      const tabs = ['simon', 'single-arm', 'target-value', 'two-arm'];
+      tabs.forEach(tab => {
+        const tabBtn = document.querySelector(`[data-tab="${tab}"]`);
+        if (tabBtn) {
+          const tabKey = tab.replace('-', '') + 'Tab';
+          tabBtn.textContent = toolT(tabKey);
+        }
+      });
+
+      // 更新结果标题
+      const resultTitles = document.querySelectorAll('.result-title');
+      resultTitles.forEach(title => {
+        title.textContent = toolT('resultTitle');
+      });
+
+      // 更新页面语言属性
+      document.documentElement.lang = toolCurrentLanguage === 'zh' ? 'zh-CN' : 'en';
+    }
+
+    // 初始化工具页面语言
+    function initToolLanguage() {
+      const savedLang = localStorage.getItem('tool-language') || 'zh';
+      toolCurrentLanguage = savedLang;
+      updateToolLanguage();
+    }
+
+    // 语言切换按钮事件
+    document.getElementById('tool-lang-toggle').addEventListener('click', toggleToolLanguage);
+
+    // 页面加载时初始化语言
+    document.addEventListener('DOMContentLoaded', initToolLanguage);
 
     // 标签页切换
     document.querySelectorAll('.tab-button').forEach(button => {
