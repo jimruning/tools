@@ -235,12 +235,31 @@
       background: #eee;
       margin: 30px 0;
     }
+    /* 语言切换样式 */
+    .lang-en {
+      display: none;
+      color: #666;
+      font-size: 0.85em;
+      margin-left: 8px;
+    }
+
+    /* 当语言为英文时显示英文文本 */
+    body[data-lang="en"] .lang-en {
+      display: inline;
+    }
+
+    /* 当语言为中文时隐藏英文文本 */
+    body[data-lang="zh"] .lang-en {
+      display: none;
+    }
+
     @media (max-width: 768px) {
       .container { padding: 20px; }
       .form-grid { grid-template-columns: 1fr; }
       header { padding: 15px 20px; }
       header h1 { font-size: 1.4em; }
       main { padding: 20px 10px; }
+      .lang-en { display: block !important; margin-left: 0; margin-top: 4px; }
     }
   </style>
 </head>
@@ -274,27 +293,27 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="simon_p0">无效率 (P0)</label>
+            <label for="simon_p0" data-translate="simon_p0_label">无效率 (P0) <span class="lang-en">Ineffective Rate (P0)</span></label>
             <input type="number" id="simon_p0" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">假设有效率的下界</div>
+            <div class="hint" data-translate="simon_p0_hint">假设有效率的下界 <span class="lang-en">Lower bound of assumed efficacy rate</span></div>
           </div>
 
           <div class="form-group">
-            <label for="simon_p1">期望有效率 (P1)</label>
+            <label for="simon_p1" data-translate="simon_p1_label">期望有效率 (P1) <span class="lang-en">Expected Efficacy Rate (P1)</span></label>
             <input type="number" id="simon_p1" value="0.25" min="0" max="1" step="0.01">
-            <div class="hint">期望的有效率 (应大于P0)</div>
+            <div class="hint" data-translate="simon_p1_hint">期望的有效率 (应大于P0) <span class="lang-en">Expected efficacy rate (should be greater than P0)</span></div>
           </div>
 
           <div class="form-group">
-            <label for="simon_alpha">显著性水平 (α)</label>
+            <label for="simon_alpha" data-translate="simon_alpha_label">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="simon_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">第一类错误概率，常用0.05</div>
+            <div class="hint" data-translate="simon_alpha_hint">第一类错误概率，常用0.05 <span class="lang-en">Type I error probability, commonly 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="simon_beta">检验效能 (1-β)</label>
+            <label for="simon_beta" data-translate="simon_beta_label">检验效能 (1-β) <span class="lang-en">Test Power (1-β)</span></label>
             <input type="number" id="simon_beta" value="0.2" min="0" max="1" step="0.01">
-            <div class="hint">1减去第二类错误概率</div>
+            <div class="hint" data-translate="simon_beta_hint">1减去第二类错误概率 <span class="lang-en">1 minus Type II error probability</span></div>
           </div>
         </div>
 
@@ -317,27 +336,27 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="sa_p0">历史有效率 (P0)</label>
+            <label for="sa_p0">历史有效率 (P0) <span class="lang-en">Historical Efficacy Rate (P0)</span></label>
             <input type="number" id="sa_p0" value="0.3" min="0" max="1" step="0.01">
-            <div class="hint">参考标准或历史数据</div>
+            <div class="hint">参考标准或历史数据 <span class="lang-en">Reference standard or historical data</span></div>
           </div>
 
           <div class="form-group">
-            <label for="sa_p1">期望有效率 (P1)</label>
+            <label for="sa_p1">期望有效率 (P1) <span class="lang-en">Expected Efficacy Rate (P1)</span></label>
             <input type="number" id="sa_p1" value="0.5" min="0" max="1" step="0.01">
-            <div class="hint">期望达到的有效率</div>
+            <div class="hint">期望达到的有效率 <span class="lang-en">Expected efficacy rate to achieve</span></div>
           </div>
 
           <div class="form-group">
-            <label for="sa_alpha">显著性水平 (α)</label>
+            <label for="sa_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="sa_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">单侧检验推荐使用0.05</div>
+            <div class="hint">单侧检验推荐使用0.05 <span class="lang-en">One-sided test recommended 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="sa_power">统计功效 (1-β)</label>
+            <label for="sa_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="sa_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">推荐值为0.8-0.9</div>
+            <div class="hint">推荐值为0.8-0.9 <span class="lang-en">Recommended values 0.8-0.9</span></div>
           </div>
         </div>
 
@@ -360,27 +379,27 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="tv_p">期望比例 (P)</label>
+            <label for="tv_p">期望比例 (P) <span class="lang-en">Expected Proportion (P)</span></label>
             <input type="number" id="tv_p" value="0.5" min="0" max="1" step="0.01">
-            <div class="hint">期望达到的比例或率</div>
+            <div class="hint">期望达到的比例或率 <span class="lang-en">Expected proportion or rate to achieve</span></div>
           </div>
 
           <div class="form-group">
-            <label for="tv_d">半宽度 (d)</label>
+            <label for="tv_d">半宽度 (d) <span class="lang-en">Half-Width (d)</span></label>
             <input type="number" id="tv_d" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">允许的精度范围</div>
+            <div class="hint">允许的精度范围 <span class="lang-en">Allowed precision range</span></div>
           </div>
 
           <div class="form-group">
-            <label for="tv_alpha">显著性水平 (α)</label>
+            <label for="tv_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="tv_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">置信区间水平，常用0.05</div>
+            <div class="hint">置信区间水平，常用0.05 <span class="lang-en">Confidence interval level, commonly 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="tv_power">统计功效 (1-β)</label>
+            <label for="tv_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="tv_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">检验效能，推荐值为0.8</div>
+            <div class="hint">检验效能，推荐值为0.8 <span class="lang-en">Test power, recommended value 0.8</span></div>
           </div>
         </div>
 
@@ -403,27 +422,27 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="ta_p1">对照组有效率 (P1)</label>
+            <label for="ta_p1">对照组有效率 (P1) <span class="lang-en">Control Group Efficacy Rate (P1)</span></label>
             <input type="number" id="ta_p1" value="0.4" min="0" max="1" step="0.01">
-            <div class="hint">对照组的预期有效率</div>
+            <div class="hint">对照组的预期有效率 <span class="lang-en">Expected efficacy rate of control group</span></div>
           </div>
 
           <div class="form-group">
-            <label for="ta_p2">试验组有效率 (P2)</label>
+            <label for="ta_p2">试验组有效率 (P2) <span class="lang-en">Treatment Group Efficacy Rate (P2)</span></label>
             <input type="number" id="ta_p2" value="0.6" min="0" max="1" step="0.01">
-            <div class="hint">试验组的预期有效率</div>
+            <div class="hint">试验组的预期有效率 <span class="lang-en">Expected efficacy rate of treatment group</span></div>
           </div>
 
           <div class="form-group">
-            <label for="ta_alpha">显著性水平 (α)</label>
+            <label for="ta_alpha">显著性水平 (α) <span class="lang-en">Significance Level (α)</span></label>
             <input type="number" id="ta_alpha" value="0.05" min="0" max="1" step="0.01">
-            <div class="hint">双侧检验推荐使用0.05</div>
+            <div class="hint">双侧检验推荐使用0.05 <span class="lang-en">Two-sided test recommended 0.05</span></div>
           </div>
 
           <div class="form-group">
-            <label for="ta_power">统计功效 (1-β)</label>
+            <label for="ta_power">统计功效 (1-β) <span class="lang-en">Statistical Power (1-β)</span></label>
             <input type="number" id="ta_power" value="0.8" min="0" max="1" step="0.01">
-            <div class="hint">推荐值为0.8-0.9</div>
+            <div class="hint">推荐值为0.8-0.9 <span class="lang-en">Recommended values 0.8-0.9</span></div>
           </div>
         </div>
 
@@ -806,6 +825,9 @@
     }
 
     function updateToolLanguage() {
+      // 设置body的data-lang属性来控制CSS显示
+      document.body.setAttribute('data-lang', toolCurrentLanguage);
+
       // 更新语言按钮文本
       const langText = document.getElementById('tool-lang-text');
       if (langText) {
